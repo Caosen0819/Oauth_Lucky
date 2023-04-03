@@ -30,10 +30,37 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
+        <!-- 业务包 -->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.itedus.lottery</groupId>-->
+        <!--            <artifactId>lottery-infrastructure</artifactId>-->
+        <!--            <version>1.0-SNAPSHOT</version>-->
+        <!--        </dependency>-->
+        <dependency>
             <groupId>cn.sen.lucky</groupId>
-            <artifactId>Lucky-infrastructure</artifactId>
+            <artifactId>Lucky-common</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.78</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.sen.middleware</groupId>
+            <artifactId>db-router-spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 

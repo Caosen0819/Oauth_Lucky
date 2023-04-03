@@ -1,5 +1,6 @@
 package cn.sen.lucky.domain.strategy.service.draw;
 
+import cn.sen.lucky.common.Constants;
 import cn.sen.lucky.domain.strategy.service.algorithm.BaseAlgorithm;
 import cn.sen.lucky.domain.strategy.service.algorithm.IDrawAlgorithm;
 import cn.sen.lucky.domain.strategy.service.algorithm.impl.DefaultRateRandomDrawAlgorithm;
@@ -19,17 +20,18 @@ public class DrawConfig {
 
 
     @Resource
-    private DefaultRateRandomDrawAlgorithm defaultRateRandomDrawAlgorithm;
+    private IDrawAlgorithm entiretyRateRandomDrawAlgorithm;
 
     @Resource
-    private SingleRateRandomDrawAlgorithm singleRateRandomDrawAlgorithm;
+    private IDrawAlgorithm singleRateRandomDrawAlgorithm;
 
 
-    protected static Map<Integer, IDrawAlgorithm> drawAlgorithmMap = new ConcurrentHashMap<>();
+
+    public static Map<Integer, IDrawAlgorithm> drawAlgorithmGroup = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void init() {
-        drawAlgorithmMap.put(1, defaultRateRandomDrawAlgorithm);
-        drawAlgorithmMap.put(2, singleRateRandomDrawAlgorithm);
+        drawAlgorithmGroup.put(Constants.StrategyMode.ENTIRETY.getCode(), entiretyRateRandomDrawAlgorithm);
+        drawAlgorithmGroup.put(Constants.StrategyMode.SINGLE.getCode(), singleRateRandomDrawAlgorithm);
     }
 }

@@ -3,6 +3,7 @@ package cn.sen.lucky.domain.strategy.service.algorithm;
 import cn.sen.lucky.domain.strategy.model.vo.AwardRateInfo;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,5 +59,8 @@ public abstract class BaseAlgorithm implements IDrawAlgorithm {
         return rateTupleMap.containsKey(strategyId);
     }
 
+    protected int generateSecureRandomIntCode(int bound){
+        return new SecureRandom().nextInt(bound) + 1;
+    }
 
 }

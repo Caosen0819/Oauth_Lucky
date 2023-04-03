@@ -1,7 +1,9 @@
 package cn.sen.lucky.domain.strategy.repository;
 
 import cn.sen.lucky.domain.strategy.model.aggregates.StrategyRich;
-import cn.sen.lucky.infrastructure.po.Award;
+import cn.sen.lucky.domain.strategy.model.vo.AwardBriefVO;
+
+import java.util.List;
 
 /**
  * @Author caosen
@@ -11,5 +13,16 @@ public interface IStrategyRepository {
 
     StrategyRich queryStrategyRich(Long strategyId);
 
-    Award queryAwardInfo(String awardId);
+    AwardBriefVO queryAwardInfo(String awardId);
+
+    List<String> queryNoStockStrategyAwardList(Long strategyId);
+
+    /**
+     * 扣减库存
+     * @param strategyId 策略ID
+     * @param awardId    奖品ID
+     * @return           扣减结果
+     */
+    boolean deductStock(Long strategyId, String awardId);
+
 }

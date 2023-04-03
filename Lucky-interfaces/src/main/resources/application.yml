@@ -1,6 +1,30 @@
 server:
   port: 8080
 
+mini-db-router:
+  jdbc:
+    datasource:
+      dbCount: 2
+      tbCount: 4
+      default: db00
+      routerKey: uId
+      list: db01,db02
+      db00:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/Lucky?useUnicode=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 185450844
+      db01:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/Lucky_01?useUnicode=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 185450844
+      db02:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/Lucky_02?useUnicode=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 185450844
+
 spring:
   datasource:
     username: root
