@@ -16,18 +16,17 @@
 
     <insert id="insert" parameterType="cn.sen.lucky.infrastructure.po.Strategy">
         INSERT INTO strategy(strategy_id, strategy_desc, strategy_mode, grant_type,
-                             grant_date, ext_info, create_time, update_time)
+        grant_date, ext_info, create_time, update_time)
         VALUES(#{strategyId}, #{strategyDesc}, #{strategyMode}, #{grantType},
-               #{grantDate}, #{extInfo}, NOW(), NOW())
+        #{grantDate}, #{extInfo}, NOW(), NOW())
     </insert>
 
     <select id="queryStrategy" parameterType="java.lang.Long" resultMap="strategyMap">
         SELECT
-            id, strategy_id, strategy_desc, strategy_mode, grant_type,
-            grant_date, ext_info, create_time, update_time
+        id, strategy_id, strategy_desc, strategy_mode, grant_type,
+        grant_date, ext_info, create_time, update_time
         FROM strategy
         WHERE strategy_id = #{strategyId}
     </select>
-
 
 </mapper>

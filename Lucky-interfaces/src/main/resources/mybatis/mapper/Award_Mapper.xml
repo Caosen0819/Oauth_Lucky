@@ -29,7 +29,7 @@
 
     <select id="queryAwardInfo" parameterType="java.lang.String" resultMap="awardMap">
         SELECT
-            id, award_id, award_type, award_name, award_content
+        id, award_id, award_type, award_name, award_content
         FROM award
         WHERE award_id = #{awardId}
     </select>

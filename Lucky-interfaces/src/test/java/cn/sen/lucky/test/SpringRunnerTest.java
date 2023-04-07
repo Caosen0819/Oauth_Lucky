@@ -10,6 +10,7 @@ import cn.sen.lucky.domain.award.serve.goods.IDistributionGoods;
 import cn.sen.lucky.domain.strategy.model.req.DrawReq;
 import cn.sen.lucky.domain.strategy.model.res.DrawResult;
 import cn.sen.lucky.domain.strategy.model.vo.DrawAwardInfo;
+import cn.sen.lucky.domain.strategy.model.vo.DrawAwardVO;
 import cn.sen.lucky.domain.strategy.service.draw.IDrawExec;
 import cn.sen.lucky.domain.strategy.service.draw.impl.DrawExecImpl;
 import cn.sen.lucky.infrastructure.dao.IActivityDao;
@@ -66,8 +67,8 @@ public class SpringRunnerTest {
         }
 
         // 封装发奖参数，orderId：2109313442431 为模拟ID，需要在用户参与领奖活动时生成
-        DrawAwardInfo drawAwardInfo = drawResult.getDrawAwardInfo();
-        GoodsReq goodsReq = new GoodsReq(drawResult.getuId(), "2109313442431", drawAwardInfo.getAwardId(), drawAwardInfo.getAwardName(), drawAwardInfo.getAwardContent());
+        DrawAwardVO drawAwardInfo = drawResult.getDrawAwardInfo();
+        GoodsReq goodsReq = new GoodsReq(drawResult.getuId(), 2109313442431L, drawAwardInfo.getAwardId(), drawAwardInfo.getAwardName(), drawAwardInfo.getAwardContent());
 
 
         // 根据 awardType 从抽奖工厂中获取对应的发奖服务

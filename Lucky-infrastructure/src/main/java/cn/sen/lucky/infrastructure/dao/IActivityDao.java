@@ -4,6 +4,8 @@ import cn.sen.lucky.domain.activity.model.vo.AlterStateVO;
 import cn.sen.lucky.infrastructure.po.Activity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * @Author caosen
  * @Date 2023/3/28 13:23
@@ -29,16 +31,25 @@ public interface IActivityDao {
    /**
     * 变更活动状态
     *
-    * @param alterStateVO  [activityId、beforeState、afterState]
+    * @param alterStateVO [activityId、beforeState、afterState]
     * @return 更新数量
     */
    int alterState(AlterStateVO alterStateVO);
 
    /**
     * 扣减活动库存
+    *
     * @param activityId 活动ID
     * @return 更新数量
     */
    int subtractionActivityStock(Long activityId);
+
+   /**
+    * 扫描待处理的活动列表，状态为：通过、活动中
+    *
+    * @param id ID
+    * @return 待处理的活动集合
+    */
+   List<Activity> scanToDoActivityList(Long id);
 
 }

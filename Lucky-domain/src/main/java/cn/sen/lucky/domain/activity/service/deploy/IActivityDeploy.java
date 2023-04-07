@@ -1,6 +1,9 @@
 package cn.sen.lucky.domain.activity.service.deploy;
 
 import cn.sen.lucky.domain.activity.model.req.ActivityConfigReq;
+import cn.sen.lucky.domain.activity.model.vo.ActivityVO;
+
+import java.util.List;
 
 /**
  * @Author caosen
@@ -20,4 +23,7 @@ public interface IActivityDeploy {
      * @param req 活动配置信息
      */
     void updateActivity(ActivityConfigReq req);
+
+    List<ActivityVO> scanToDoActivityList(Long id);
+
 }

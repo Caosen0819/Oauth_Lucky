@@ -8,6 +8,7 @@ import static cn.sen.lucky.domain.award.serve.factory.GoodsConfig.goodsMap;
 
 
 /**
+ * 配送商品简单工厂，提供获取配送服务
  * @Author caosen
  * @Date 2023/3/30 17:04
  */

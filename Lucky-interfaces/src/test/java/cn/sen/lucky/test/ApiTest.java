@@ -2,11 +2,7 @@ package cn.sen.lucky.test;
 
 import cn.sen.lucky.infrastructure.dao.IActivityDao;
 import cn.sen.lucky.infrastructure.po.Activity;
-import cn.sen.lucky.rpc.IActivityBooth;
-import cn.sen.lucky.rpc.req.ActivityReq;
-import cn.sen.lucky.rpc.res.ActivityRes;
 import com.alibaba.fastjson.JSON;
-import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

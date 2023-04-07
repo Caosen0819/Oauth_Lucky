@@ -9,25 +9,31 @@ import cn.sen.lucky.domain.award.model.vo.ShippingAddress;
  */
 public class GoodsReq {
 
-    /*用户id*/
+    /** 用户ID */
     private String uId;
 
-    private String orderId;
+    /** 抽奖单号 ID */
+    private Long orderId;
 
+    /** 奖品ID */
     private String awardId;
 
+    /** 奖品名称 */
     private String awardName;
 
+    /** 奖品内容「描述、奖品码、sku」 */
     private String awardContent;
 
+    /** 四级送货地址（只有实物类商品需要地址） */
     private ShippingAddress shippingAddress;
 
+    /** 扩展信息，用于一些个性商品发放所需要的透传字段内容 */
     private String extInfo;
 
-    public GoodsReq(){
-
+    public GoodsReq() {
     }
-    public GoodsReq(String uId, String orderId, String awardId, String awardName, String awardContent) {
+
+    public GoodsReq(String uId, Long orderId, String awardId, String awardName, String awardContent) {
         this.uId = uId;
         this.orderId = orderId;
         this.awardId = awardId;
@@ -35,7 +41,7 @@ public class GoodsReq {
         this.awardContent = awardContent;
     }
 
-    public GoodsReq(String uId, String orderId, String awardId, String awardName, String awardContent, ShippingAddress shippingAddress) {
+    public GoodsReq(String uId, Long orderId, String awardId, String awardName, String awardContent, ShippingAddress shippingAddress) {
         this.uId = uId;
         this.orderId = orderId;
         this.awardId = awardId;
@@ -52,11 +58,11 @@ public class GoodsReq {
         this.uId = uId;
     }
 
-    public String getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 
@@ -99,8 +105,4 @@ public class GoodsReq {
     public void setExtInfo(String extInfo) {
         this.extInfo = extInfo;
     }
-
-
-
-
 }

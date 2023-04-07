@@ -1,5 +1,9 @@
 package cn.sen.lucky.domain.strategy.model.vo;
 
+/*中奖信息
+* */
+
+import java.util.Date;
 
 public class DrawAwardInfo {
 
@@ -22,6 +26,20 @@ public class DrawAwardInfo {
      * 奖品内容「描述、奖品码、sku」
      */
     private String awardContent;
+
+    /**
+     * 策略方式（1:单项概率、2:总体概率）
+     */
+    private Integer strategyMode;
+
+    /**
+     * 发放奖品方式（1:即时、2:定时[含活动结束]、3:人工）
+     */
+    private Integer grantType;
+    /**
+     * 发奖时间
+     */
+    private Date grantDate;
 
     public DrawAwardInfo() {
     }
@@ -63,5 +81,29 @@ public class DrawAwardInfo {
 
     public void setAwardContent(String awardContent) {
         this.awardContent = awardContent;
+    }
+
+    public Integer getStrategyMode() {
+        return strategyMode;
+    }
+
+    public void setStrategyMode(Integer strategyMode) {
+        this.strategyMode = strategyMode;
+    }
+
+    public Integer getGrantType() {
+        return grantType;
+    }
+
+    public void setGrantType(Integer grantType) {
+        this.grantType = grantType;
+    }
+
+    public Date getGrantDate() {
+        return grantDate;
+    }
+
+    public void setGrantDate(Date grantDate) {
+        this.grantDate = grantDate;
     }
 }

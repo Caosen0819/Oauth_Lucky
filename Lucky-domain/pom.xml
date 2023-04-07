@@ -36,7 +36,7 @@
 
         <!-- 业务包 -->
         <!--        <dependency>-->
-        <!--            <groupId>cn.itedus.lottery</groupId>-->
+        <!--            <groupId>cn.sen.lucky</groupId>-->
         <!--            <artifactId>lottery-infrastructure</artifactId>-->
         <!--            <version>1.0-SNAPSHOT</version>-->
         <!--        </dependency>-->
@@ -61,6 +61,10 @@
         <dependency>
             <groupId>cn.sen.middleware</groupId>
             <artifactId>db-router-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
         </dependency>
     </dependencies>
 

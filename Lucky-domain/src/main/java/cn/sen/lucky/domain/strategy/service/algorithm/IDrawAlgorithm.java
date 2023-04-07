@@ -47,4 +47,5 @@ public interface IDrawAlgorithm {
      * @return 中奖结果
      */
     String randomDraw(Long strategyId, List<String> excludeAwardIds);
+    boolean isExist(Long strategyId);
 }

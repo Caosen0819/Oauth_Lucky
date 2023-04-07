@@ -15,6 +15,5 @@ public interface IDistributionGoods {
      */
     DistributionRes doDistribution(GoodsReq goodsReq);
 
-    Integer getDistributionGoodsName();
 
 }
