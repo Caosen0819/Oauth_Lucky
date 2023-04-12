@@ -3,6 +3,7 @@ package cn.sen.lucky.domain.activity.service.partake;
 import cn.sen.lucky.common.Result;
 import cn.sen.lucky.domain.activity.model.req.PartakeReq;
 import cn.sen.lucky.domain.activity.model.res.PartakeResult;
+import cn.sen.lucky.domain.activity.model.vo.ActivityPartakeRecordVO;
 import cn.sen.lucky.domain.activity.model.vo.DrawOrderVO;
 import cn.sen.lucky.domain.activity.model.vo.InvoiceVO;
 
@@ -46,5 +47,13 @@ public interface IActivityPartake {
      * @return 发货单
      */
     List<InvoiceVO> scanInvoiceMqState(int dbCount, int tbCount);
+
+
+    /**
+     * 更新活动库存
+     *
+     * @param activityPartakeRecordVO   活动领取记录
+     */
+    void updateActivityStock(ActivityPartakeRecordVO activityPartakeRecordVO);
 
 }

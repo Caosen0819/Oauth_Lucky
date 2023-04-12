@@ -2,13 +2,16 @@ package cn.sen.lucky.infrastructure.repository;
 
 
 import cn.sen.lucky.common.Constants;
+import cn.sen.lucky.domain.activity.model.vo.ActivityPartakeRecordVO;
 import cn.sen.lucky.domain.activity.model.vo.DrawOrderVO;
 import cn.sen.lucky.domain.activity.model.vo.InvoiceVO;
 import cn.sen.lucky.domain.activity.model.vo.UserTakeActivityVO;
 import cn.sen.lucky.domain.activity.repository.IUserTakeActivityRepository;
+import cn.sen.lucky.infrastructure.dao.IActivityDao;
 import cn.sen.lucky.infrastructure.dao.IUserStrategyExportDao;
 import cn.sen.lucky.infrastructure.dao.IUserTakeActivityCountDao;
 import cn.sen.lucky.infrastructure.dao.IUserTakeActivityDao;
+import cn.sen.lucky.infrastructure.po.Activity;
 import cn.sen.lucky.infrastructure.po.UserStrategyExport;
 import cn.sen.lucky.infrastructure.po.UserTakeActivity;
 import cn.sen.lucky.infrastructure.po.UserTakeActivityCount;
@@ -27,6 +30,9 @@ import java.util.List;
 @Repository
 public class UserTakeActivityRepository implements IUserTakeActivityRepository {
 
+
+    @Resource
+    private IActivityDao activityDao;
     @Resource
     private IUserTakeActivityCountDao userTakeActivityCountDao;
 
@@ -153,6 +159,14 @@ public class UserTakeActivityRepository implements IUserTakeActivityRepository {
             invoiceVOList.add(invoiceVO);
         }
         return invoiceVOList;
+    }
+
+    @Override
+    public void updateActivityStock(ActivityPartakeRecordVO activityPartakeRecordVO) {
+        Activity activity = new Activity();
+        activity.setActivityId(activityPartakeRecordVO.getActivityId());
+        activity.setStockSurplusCount(activityPartakeRecordVO.getStockSurplusCount());
+        activityDao.updateActivityStock(activity);
     }
 
 }

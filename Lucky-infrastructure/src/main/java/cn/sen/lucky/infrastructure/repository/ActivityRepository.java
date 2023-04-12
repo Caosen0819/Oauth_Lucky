@@ -171,6 +171,13 @@ public class ActivityRepository implements IActivityRepository {
 
     @Override
     public void recoverActivityCacheStockByRedis(Long activityId, String tokenKey, String code) {
+
+        if(!Constants.ResponseCode.SUCCESS.getCode().equals(code)) {
+            String stockKey = Constants.RedisKey.KEY_LOTTERY_ACTIVITY_STOCK_COUNT(activityId);
+            redisUtil.decr(stockKey, 1);
+            return;
+
+        }
         // 删除分布式锁 Key
         redisUtil.del(tokenKey);
     }

@@ -5,10 +5,7 @@ import cn.sen.lucky.common.Result;
 import cn.sen.lucky.domain.activity.model.req.PartakeReq;
 import cn.sen.lucky.domain.activity.model.res.PartakeResult;
 import cn.sen.lucky.domain.activity.model.res.StockResult;
-import cn.sen.lucky.domain.activity.model.vo.ActivityBillVO;
-import cn.sen.lucky.domain.activity.model.vo.DrawOrderVO;
-import cn.sen.lucky.domain.activity.model.vo.InvoiceVO;
-import cn.sen.lucky.domain.activity.model.vo.UserTakeActivityVO;
+import cn.sen.lucky.domain.activity.model.vo.*;
 import cn.sen.lucky.domain.activity.repository.IUserTakeActivityRepository;
 import cn.sen.lucky.domain.activity.service.partake.BaseActivityPartake;
 import cn.sen.lucky.domain.support.ids.IIdGenerator;
@@ -173,6 +170,11 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
         } finally {
             dbRouter.clear();
         }
+    }
+
+    @Override
+    public void updateActivityStock(ActivityPartakeRecordVO activityPartakeRecordVO) {
+        userTakeActivityRepository.updateActivityStock(activityPartakeRecordVO);
     }
 
 }
