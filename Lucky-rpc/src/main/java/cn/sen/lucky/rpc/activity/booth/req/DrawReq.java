@@ -1,20 +1,19 @@
-package cn.sen.lucky.process.req;
+package cn.sen.lucky.rpc.activity.booth.req;
 
-/**
- * @description: 抽奖请求
+import java.io.Serializable;
 
- */
-public class DrawProcessReq {
+
+public class DrawReq implements Serializable {
 
     /** 用户ID */
     private String uId;
     /** 活动ID */
     private Long activityId;
 
-    public DrawProcessReq() {
+    public DrawReq() {
     }
 
-    public DrawProcessReq(String uId, Long activityId) {
+    public DrawReq(String uId, Long activityId) {
         this.uId = uId;
         this.activityId = activityId;
     }
@@ -34,5 +33,4 @@ public class DrawProcessReq {
     public void setActivityId(Long activityId) {
         this.activityId = activityId;
     }
-
 }

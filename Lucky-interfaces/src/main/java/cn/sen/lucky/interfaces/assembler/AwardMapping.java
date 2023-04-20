@@ -1,7 +1,7 @@
 package cn.sen.lucky.interfaces.assembler;
 import cn.sen.lucky.domain.strategy.model.vo.DrawAwardVO;
 
-import cn.sen.lucky.rpc.dto.AwardDTO;
+import cn.sen.lucky.rpc.activity.booth.dto.AwardDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

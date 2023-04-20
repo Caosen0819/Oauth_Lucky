@@ -1,9 +1,10 @@
 package cn.sen.lucky.test.interfaces;
 
-import cn.sen.lucky.rpc.ILuckyActivityBooth;
-import cn.sen.lucky.rpc.req.DrawReq;
-import cn.sen.lucky.rpc.req.QuantificationDrawReq;
-import cn.sen.lucky.rpc.res.DrawRes;
+
+import cn.sen.lucky.rpc.activity.booth.ILuckyActivityBooth;
+import cn.sen.lucky.rpc.activity.booth.req.DrawReq;
+import cn.sen.lucky.rpc.activity.booth.req.QuantificationDrawReq;
+import cn.sen.lucky.rpc.activity.booth.res.DrawRes;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,19 +21,19 @@ import java.util.HashMap;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class LotteryActivityBoothTest {
+public class LuckyActivityBoothTest {
 
-    private Logger logger = LoggerFactory.getLogger(LotteryActivityBoothTest.class);
+    private Logger logger = LoggerFactory.getLogger(LuckyActivityBoothTest.class);
 
     @Resource
-    private ILuckyActivityBooth lotteryActivityBooth;
+    private ILuckyActivityBooth luckyActivityBooth;
 
     @Test
     public void test_doDraw() {
         DrawReq drawReq = new DrawReq();
         drawReq.setuId("xiaofuge");
         drawReq.setActivityId(100001L);
-        DrawRes drawRes = lotteryActivityBooth.doDraw(drawReq);
+        DrawRes drawRes = luckyActivityBooth.doDraw(drawReq);
         logger.info("请求参数：{}", JSON.toJSONString(drawReq));
         logger.info("测试结果：{}", JSON.toJSONString(drawRes));
 
@@ -48,7 +49,7 @@ public class LotteryActivityBoothTest {
             put("age", "18");
         }});
 
-        DrawRes drawRes = lotteryActivityBooth.doQuantificationDraw(req);
+        DrawRes drawRes = luckyActivityBooth.doQuantificationDraw(req);
         logger.info("请求参数：{}", JSON.toJSONString(req));
         logger.info("测试结果：{}", JSON.toJSONString(drawRes));
 

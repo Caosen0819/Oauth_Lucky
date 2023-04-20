@@ -22,10 +22,10 @@
     <insert id="insert" parameterType="cn.sen.lucky.infrastructure.po.Activity">
         INSERT INTO activity
         (activity_id, activity_name, activity_desc, begin_date_time, end_date_time,
-        stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time)
+         stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time)
         VALUES
-        (#{activityId}, #{activityName}, #{activityDesc}, #{beginDateTime}, #{endDateTime},
-         #{stockCount}, #{stockSurplusCount}, #{takeCount}, #{strategyId}, #{state}, #{creator}, now(), now())
+            (#{activityId}, #{activityName}, #{activityDesc}, #{beginDateTime}, #{endDateTime},
+             #{stockCount}, #{stockSurplusCount}, #{takeCount}, #{strategyId}, #{state}, #{creator}, now(), now())
     </insert>
 
     <update id="alterState" parameterType="cn.sen.lucky.domain.activity.model.vo.AlterStateVO">
@@ -36,7 +36,7 @@
 
     <select id="queryActivityById" parameterType="java.lang.Long" resultMap="activityMap">
         SELECT activity_id, activity_name, activity_desc, begin_date_time, end_date_time,
-        stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time
+               stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time
         FROM activity
         WHERE activity_id = #{activityId}
     </select>
@@ -51,11 +51,40 @@
         FROM activity
         WHERE id >= #{id} AND state in (4,5)
         ORDER BY ID ASC
-        LIMIT 10
+            LIMIT 10
     </select>
-    <update id="updateActivityStock" parameterType="cn.itedus.lottery.infrastructure.po.Activity">
+
+    <update id="updateActivityStock" parameterType="cn.sen.lucky.infrastructure.po.Activity">
         UPDATE activity SET stock_surplus_count = #{stockSurplusCount}
         WHERE activity_id = #{activityId} AND stock_surplus_count > #{stockSurplusCount}
     </update>
+
+    <select id="queryActivityInfoCount" parameterType="cn.sen.lucky.domain.activity.model.req.ActivityInfoLimitPageReq" resultType="java.lang.Long">
+        SELECT count(*) FROM activity
+        <trim prefix="where" prefixOverrides="AND | OR" suffixOverrides="and">
+            <if test="null != activityId">
+                activity_id = #{activityId}
+            </if>
+            <if test="null != activityName">
+                activity_name = #{activityName}
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryActivityInfoList" parameterType="cn.sen.lucky.domain.activity.model.req.ActivityInfoLimitPageReq" resultMap="activityMap">
+        SELECT id, activity_id, activity_name, activity_desc, begin_date_time, end_date_time,
+        stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time
+        FROM activity
+        <trim prefix="where" prefixOverrides="AND | OR" suffixOverrides="and">
+            <if test="null != activityId">
+                activity_id = #{activityId}
+            </if>
+            <if test="null != activityName">
+                activity_name = #{activityName}
+            </if>
+        </trim>
+        ORDER BY id DESC
+        LIMIT #{pageBegin}, #{pageEnd}
+    </select>
 
 </mapper>

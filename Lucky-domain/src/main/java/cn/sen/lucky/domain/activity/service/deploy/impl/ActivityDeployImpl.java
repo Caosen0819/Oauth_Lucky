@@ -1,7 +1,9 @@
 package cn.sen.lucky.domain.activity.service.deploy.impl;
 
 import cn.sen.lucky.domain.activity.model.aggregates.ActivityConfigRich;
+import cn.sen.lucky.domain.activity.model.aggregates.ActivityInfoLimitPageRich;
 import cn.sen.lucky.domain.activity.model.req.ActivityConfigReq;
+import cn.sen.lucky.domain.activity.model.req.ActivityInfoLimitPageReq;
 import cn.sen.lucky.domain.activity.model.vo.ActivityVO;
 import cn.sen.lucky.domain.activity.model.vo.AwardVO;
 import cn.sen.lucky.domain.activity.model.vo.StrategyDetailVO;
@@ -68,5 +70,10 @@ public class ActivityDeployImpl implements IActivityDeploy {
     @Override
     public List<ActivityVO> scanToDoActivityList(Long id) {
         return activityRepository.scanToDoActivityList(id);
+    }
+
+    @Override
+    public ActivityInfoLimitPageRich queryActivityInfoLimitPage(ActivityInfoLimitPageReq req) {
+        return activityRepository.queryActivityInfoLimitPage(req);
     }
 }

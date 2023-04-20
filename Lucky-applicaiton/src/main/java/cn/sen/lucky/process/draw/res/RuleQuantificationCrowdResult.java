@@ -1,12 +1,8 @@
-package cn.sen.lucky.process.res;
+package cn.sen.lucky.process.draw.res;
 
 
 import cn.sen.lucky.common.Result;
 
-/**
- * @description:
-
- */
 public class RuleQuantificationCrowdResult extends Result {
 
     /** 活动ID */

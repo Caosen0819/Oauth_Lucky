@@ -1,23 +1,19 @@
-package cn.sen.lucky.rpc.req;
-
-import java.io.Serializable;
+package cn.sen.lucky.process.draw.req;
 
 /**
- * 指定抽奖方式的请求
- * @Author caosen
- * @Date 2023/4/4 19:36
+ * @description: 抽奖请求
  */
-public class DrawReq implements Serializable {
+public class DrawProcessReq {
 
     /** 用户ID */
     private String uId;
     /** 活动ID */
     private Long activityId;
 
-    public DrawReq() {
+    public DrawProcessReq() {
     }
 
-    public DrawReq(String uId, Long activityId) {
+    public DrawProcessReq(String uId, Long activityId) {
         this.uId = uId;
         this.activityId = activityId;
     }
@@ -37,4 +33,5 @@ public class DrawReq implements Serializable {
     public void setActivityId(Long activityId) {
         this.activityId = activityId;
     }
+
 }

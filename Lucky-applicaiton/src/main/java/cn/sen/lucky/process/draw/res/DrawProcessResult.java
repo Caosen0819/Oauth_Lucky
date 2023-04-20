@@ -1,12 +1,9 @@
-package cn.sen.lucky.process.res;
+package cn.sen.lucky.process.draw.res;
 
 
 import cn.sen.lucky.common.Result;
 import cn.sen.lucky.domain.strategy.model.vo.DrawAwardVO;
 
-/**
- * @description: 活动抽奖结果
- */
 public class DrawProcessResult extends Result {
 
     private DrawAwardVO drawAwardVO;
@@ -27,4 +24,5 @@ public class DrawProcessResult extends Result {
     public void setDrawAwardVO(DrawAwardVO drawAwardVO) {
         this.drawAwardVO = drawAwardVO;
     }
+
 }

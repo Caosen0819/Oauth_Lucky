@@ -4,16 +4,18 @@ import cn.sen.lucky.common.Constants;
 import cn.sen.lucky.domain.rule.model.req.DecisionMatterReq;
 import cn.sen.lucky.domain.strategy.model.vo.DrawAwardVO;
 import cn.sen.lucky.interfaces.assembler.IMapping;
-import cn.sen.lucky.process.IActivityProcess;
-import cn.sen.lucky.process.req.DrawProcessReq;
-import cn.sen.lucky.process.res.DrawProcessResult;
-import cn.sen.lucky.process.res.RuleQuantificationCrowdResult;
-import cn.sen.lucky.rpc.ILuckyActivityBooth;
-import cn.sen.lucky.rpc.dto.AwardDTO;
-import cn.sen.lucky.rpc.req.DrawReq;
-import cn.sen.lucky.rpc.req.QuantificationDrawReq;
-import cn.sen.lucky.rpc.res.DrawRes;
+import cn.sen.lucky.process.draw.IActivityDrawProcess;
+import cn.sen.lucky.process.draw.req.DrawProcessReq;
+import cn.sen.lucky.process.draw.res.DrawProcessResult;
+
+import cn.sen.lucky.process.draw.res.RuleQuantificationCrowdResult;
+import cn.sen.lucky.rpc.activity.booth.ILuckyActivityBooth;
+import cn.sen.lucky.rpc.activity.booth.dto.AwardDTO;
+import cn.sen.lucky.rpc.activity.booth.req.DrawReq;
+import cn.sen.lucky.rpc.activity.booth.req.QuantificationDrawReq;
+import cn.sen.lucky.rpc.activity.booth.res.DrawRes;
 import com.alibaba.fastjson.JSON;
+import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -25,13 +27,13 @@ import javax.annotation.Resource;
  * @Author caosen
  * @Date 2023/4/4 19:34
  */
-@Controller
-public class LotteryActivityBooth implements ILuckyActivityBooth {
+@Service
+public class LuckyActivityBooth implements ILuckyActivityBooth {
 
-    private Logger logger = LoggerFactory.getLogger(LotteryActivityBooth.class);
+    private Logger logger = LoggerFactory.getLogger(LuckyActivityBooth.class);
 
     @Resource
-    private IActivityProcess activityProcess;
+    private IActivityDrawProcess activityProcess;
 
     @Resource
     private IMapping<DrawAwardVO, AwardDTO> awardMapping;
@@ -103,4 +105,5 @@ public class LotteryActivityBooth implements ILuckyActivityBooth {
             return new DrawRes(Constants.ResponseCode.UN_ERROR.getCode(), Constants.ResponseCode.UN_ERROR.getInfo());
         }
     }
+
 }

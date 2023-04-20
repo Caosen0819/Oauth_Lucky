@@ -1,9 +1,10 @@
 package cn.sen.lucky.test.application;
 
 
-import cn.sen.lucky.process.IActivityProcess;
-import cn.sen.lucky.process.req.DrawProcessReq;
-import cn.sen.lucky.process.res.DrawProcessResult;
+
+import cn.sen.lucky.process.draw.IActivityDrawProcess;
+import cn.sen.lucky.process.draw.req.DrawProcessReq;
+import cn.sen.lucky.process.draw.res.DrawProcessResult;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,12 +25,12 @@ public class ActivityProcessTest {
     private Logger logger = LoggerFactory.getLogger(ActivityProcessTest.class);
 
     @Resource
-    private IActivityProcess activityProcess;
+    private IActivityDrawProcess activityProcess;
 
     @Test
     public void test_doDrawProcess() {
         DrawProcessReq req = new DrawProcessReq();
-        req.setuId("xiaofuge");
+        req.setuId("fuzhengwei");
         req.setActivityId(100001L);
         DrawProcessResult drawProcessResult = activityProcess.doDrawProcess(req);
 

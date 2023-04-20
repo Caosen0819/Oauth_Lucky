@@ -1,7 +1,6 @@
-package cn.sen.lucky.process.impl;
+package cn.sen.lucky.process.draw.impl;
 
 import cn.sen.lucky.common.Constants;
-
 import cn.sen.lucky.common.Result;
 import cn.sen.lucky.domain.activity.model.req.PartakeReq;
 import cn.sen.lucky.domain.activity.model.res.PartakeResult;
@@ -18,10 +17,12 @@ import cn.sen.lucky.domain.strategy.model.vo.DrawAwardVO;
 import cn.sen.lucky.domain.strategy.service.draw.IDrawExec;
 import cn.sen.lucky.domain.support.ids.IIdGenerator;
 import cn.sen.lucky.mq.producer.KafkaProducer;
-import cn.sen.lucky.process.IActivityProcess;
-import cn.sen.lucky.process.req.DrawProcessReq;
-import cn.sen.lucky.process.res.DrawProcessResult;
-import cn.sen.lucky.process.res.RuleQuantificationCrowdResult;
+import cn.sen.lucky.process.draw.IActivityDrawProcess;
+import cn.sen.lucky.process.draw.req.DrawProcessReq;
+import cn.sen.lucky.process.draw.res.DrawProcessResult;
+import cn.sen.lucky.process.draw.res.RuleQuantificationCrowdResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -30,12 +31,11 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import javax.annotation.Resource;
 import java.util.Map;
 
-/**
- * @Author caosen
- * @Date 2023/4/3 21:44
- */
+
 @Service
-public class ActivityProcessImpl implements IActivityProcess {
+public class ActivityDrawProcessImpl implements IActivityDrawProcess {
+
+    private Logger logger = LoggerFactory.getLogger(ActivityDrawProcessImpl.class);
 
     @Resource
     private IActivityPartake activityPartake;
@@ -52,16 +52,13 @@ public class ActivityProcessImpl implements IActivityProcess {
     @Resource
     private KafkaProducer kafkaProducer;
 
-
     @Override
     public DrawProcessResult doDrawProcess(DrawProcessReq req) {
-        /*活动获取*/
+        // 1. 领取活动
         PartakeResult partakeResult = activityPartake.doPartake(new PartakeReq(req.getuId(), req.getActivityId()));
-        if (!Constants.ResponseCode.SUCCESS.getCode().equals(partakeResult.getCode())) {
-            return new  DrawProcessResult(partakeResult.getCode(), partakeResult.getInfo());
+        if (!Constants.ResponseCode.SUCCESS.getCode().equals(partakeResult.getCode()) && !Constants.ResponseCode.NOT_CONSUMED_TAKE.getCode().equals(partakeResult.getCode())) {
+            return new DrawProcessResult(partakeResult.getCode(), partakeResult.getInfo());
         }
-        Long strategyId = partakeResult.getStrategyId();
-        Long takeId = partakeResult.getTakeId();
 
         // 2. 首次成功领取活动，发送 MQ 消息
         if (Constants.ResponseCode.SUCCESS.getCode().equals(partakeResult.getCode())) {
@@ -74,12 +71,16 @@ public class ActivityProcessImpl implements IActivityProcess {
             kafkaProducer.sendLuckyActivityPartakeRecord(activityPartakeRecord);
         }
 
-        /*实行抽奖*/
-        DrawResult drawResult = drawExec.doDrawExec(new DrawReq(req.getuId(), strategyId, String.valueOf(takeId)));
+        Long strategyId = partakeResult.getStrategyId();
+        Long takeId = partakeResult.getTakeId();
+
+        // 3. 执行抽奖
+        DrawResult drawResult = drawExec.doDrawExec(new DrawReq(req.getuId(), strategyId));
         if (Constants.DrawState.FAIL.getCode().equals(drawResult.getDrawState())) {
             return new DrawProcessResult(Constants.ResponseCode.LOSING_DRAW.getCode(), Constants.ResponseCode.LOSING_DRAW.getInfo());
         }
         DrawAwardVO drawAwardVO = drawResult.getDrawAwardInfo();
+
         // 4. 结果落库
         DrawOrderVO drawOrderVO = buildDrawOrderVO(req, strategyId, takeId, drawAwardVO);
         Result recordResult = activityPartake.recordDrawOrder(drawOrderVO);
@@ -94,23 +95,57 @@ public class ActivityProcessImpl implements IActivityProcess {
 
             @Override
             public void onSuccess(SendResult<String, Object> stringObjectSendResult) {
-                // 5.1 MQ 消息发送完成，更新数据库表 user_strategy_export.mq_state = 1
+                // 4.1 MQ 消息发送完成，更新数据库表 user_strategy_export.mq_state = 1
                 activityPartake.updateInvoiceMqState(invoiceVO.getuId(), invoiceVO.getOrderId(), Constants.MQState.COMPLETE.getCode());
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                // 5.2 MQ 消息发送失败，更新数据库表 user_strategy_export.mq_state = 2 【等待定时任务扫码补偿MQ消息】
+                // 4.2 MQ 消息发送失败，更新数据库表 user_strategy_export.mq_state = 2 【等待定时任务扫码补偿MQ消息】
                 activityPartake.updateInvoiceMqState(invoiceVO.getuId(), invoiceVO.getOrderId(), Constants.MQState.FAIL.getCode());
             }
 
         });
+
         // 6. 返回结果
         return new DrawProcessResult(Constants.ResponseCode.SUCCESS.getCode(), Constants.ResponseCode.SUCCESS.getInfo(), drawAwardVO);
-
-
-
     }
+
+    @Override
+    public RuleQuantificationCrowdResult doRuleQuantificationCrowd(DecisionMatterReq req) {
+        // 1. 量化决策
+        EngineResult engineResult = engineFilter.process(req);
+
+        if (!engineResult.isSuccess()) {
+            return new RuleQuantificationCrowdResult(Constants.ResponseCode.RULE_ERR.getCode(), Constants.ResponseCode.RULE_ERR.getInfo());
+        }
+
+        // 2. 封装结果
+        RuleQuantificationCrowdResult ruleQuantificationCrowdResult = new RuleQuantificationCrowdResult(Constants.ResponseCode.SUCCESS.getCode(), Constants.ResponseCode.SUCCESS.getInfo());
+        ruleQuantificationCrowdResult.setActivityId(Long.valueOf(engineResult.getNodeValue()));
+
+        return ruleQuantificationCrowdResult;
+    }
+
+    private DrawOrderVO buildDrawOrderVO(DrawProcessReq req, Long strategyId, Long takeId, DrawAwardVO drawAwardVO) {
+        long orderId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
+        DrawOrderVO drawOrderVO = new DrawOrderVO();
+        drawOrderVO.setuId(req.getuId());
+        drawOrderVO.setTakeId(takeId);
+        drawOrderVO.setActivityId(req.getActivityId());
+        drawOrderVO.setOrderId(orderId);
+        drawOrderVO.setStrategyId(strategyId);
+        drawOrderVO.setStrategyMode(drawAwardVO.getStrategyMode());
+        drawOrderVO.setGrantType(drawAwardVO.getGrantType());
+        drawOrderVO.setGrantDate(drawAwardVO.getGrantDate());
+        drawOrderVO.setGrantState(Constants.GrantState.INIT.getCode());
+        drawOrderVO.setAwardId(drawAwardVO.getAwardId());
+        drawOrderVO.setAwardType(drawAwardVO.getAwardType());
+        drawOrderVO.setAwardName(drawAwardVO.getAwardName());
+        drawOrderVO.setAwardContent(drawAwardVO.getAwardContent());
+        return drawOrderVO;
+    }
+
     private InvoiceVO buildInvoiceVO(DrawOrderVO drawOrderVO) {
         InvoiceVO invoiceVO = new InvoiceVO();
         invoiceVO.setuId(drawOrderVO.getuId());
@@ -123,38 +158,5 @@ public class ActivityProcessImpl implements IActivityProcess {
         invoiceVO.setExtInfo(null);
         return invoiceVO;
     }
-    private DrawOrderVO buildDrawOrderVO(DrawProcessReq req, Long strategyId, Long takeId, DrawAwardVO drawAwardInfo) {
-        long orderId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
-        DrawOrderVO drawOrderVO = new DrawOrderVO();
-        drawOrderVO.setuId(req.getuId());
-        drawOrderVO.setTakeId(takeId);
-        drawOrderVO.setActivityId(req.getActivityId());
-        drawOrderVO.setOrderId(orderId);
-        drawOrderVO.setStrategyId(strategyId);
-        drawOrderVO.setStrategyMode(drawAwardInfo.getStrategyMode());
-        drawOrderVO.setGrantType(drawAwardInfo.getGrantType());
-        drawOrderVO.setGrantDate(drawAwardInfo.getGrantDate());
-        drawOrderVO.setGrantState(Constants.GrantState.INIT.getCode());
-        drawOrderVO.setAwardId(drawAwardInfo.getAwardId());
-        drawOrderVO.setAwardType(drawAwardInfo.getAwardType());
-        drawOrderVO.setAwardName(drawAwardInfo.getAwardName());
-        drawOrderVO.setAwardContent(drawAwardInfo.getAwardContent());
-        return drawOrderVO;
-    }
 
-    @Override
-    public RuleQuantificationCrowdResult doRuleQuantificationCrowd(DecisionMatterReq req) {
-        // 1. 量化决策
-        EngineResult engineResult = engineFilter.process(req);
-
-        if (!engineResult.isSuccess()) {
-            return new RuleQuantificationCrowdResult(Constants.ResponseCode.RULE_ERR.getCode(),Constants.ResponseCode.RULE_ERR.getInfo());
-        }
-
-        // 2. 封装结果
-        RuleQuantificationCrowdResult ruleQuantificationCrowdResult = new RuleQuantificationCrowdResult(Constants.ResponseCode.SUCCESS.getCode(), Constants.ResponseCode.SUCCESS.getInfo());
-        ruleQuantificationCrowdResult.setActivityId(Long.valueOf(engineResult.getNodeValue()));
-
-        return ruleQuantificationCrowdResult;
-    }
 }

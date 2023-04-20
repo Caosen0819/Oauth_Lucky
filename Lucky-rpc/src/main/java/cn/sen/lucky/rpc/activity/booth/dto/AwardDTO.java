@@ -1,12 +1,9 @@
-package cn.sen.lucky.rpc.dto;
+package cn.sen.lucky.rpc.activity.booth.dto;
 
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @Author caosen
- * @Date 2023/4/4 19:39
- */
+
 public class AwardDTO implements Serializable {
 
     /**

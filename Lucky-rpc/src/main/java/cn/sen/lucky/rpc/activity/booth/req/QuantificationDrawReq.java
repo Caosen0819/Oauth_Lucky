@@ -1,12 +1,8 @@
-package cn.sen.lucky.rpc.req;
+package cn.sen.lucky.rpc.activity.booth.req;
 
 import java.util.Map;
 
-/**
- * 量化人群抽奖的请求
- * @Author caosen
- * @Date 2023/4/4 19:37
- */
+
 public class QuantificationDrawReq {
 
     /** 用户ID */

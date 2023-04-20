@@ -1,14 +1,12 @@
-package cn.sen.lucky.rpc.res;
+package cn.sen.lucky.rpc.activity.booth.res;
+
 
 import cn.sen.lucky.common.Result;
-import cn.sen.lucky.rpc.dto.AwardDTO;
+import cn.sen.lucky.rpc.activity.booth.dto.AwardDTO;
 
 import java.io.Serializable;
 
-/**
- * @Author caosen
- * @Date 2023/4/4 19:38
- */
+
 public class DrawRes extends Result implements Serializable {
 
     private AwardDTO awardDTO;

@@ -1,6 +1,8 @@
 package cn.sen.lucky.domain.activity.repository;
 
 import cn.sen.lucky.common.Constants;
+import cn.sen.lucky.domain.activity.model.aggregates.ActivityInfoLimitPageRich;
+import cn.sen.lucky.domain.activity.model.req.ActivityInfoLimitPageReq;
 import cn.sen.lucky.domain.activity.model.req.PartakeReq;
 import cn.sen.lucky.domain.activity.model.res.StockResult;
 import cn.sen.lucky.domain.activity.model.vo.*;
@@ -94,5 +96,13 @@ public interface IActivityRepository {
      * @param code          状态
      */
     void recoverActivityCacheStockByRedis(Long activityId, String tokenKey, String code);
+
+    /**
+     * 查询活动分页查询聚合对象
+     *
+     * @param req 请求参数；分页、活动
+     * @return    查询结果
+     */
+    ActivityInfoLimitPageRich queryActivityInfoLimitPage(ActivityInfoLimitPageReq req);
 
 }

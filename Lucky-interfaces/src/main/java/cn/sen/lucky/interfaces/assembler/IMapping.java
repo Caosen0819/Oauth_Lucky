@@ -61,4 +61,5 @@ public interface IMapping<SOURCE, TARGET> {
      * @return       结果
      */
     List<SOURCE> targetToSource(Stream<TARGET> stream);
+
 }

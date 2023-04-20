@@ -1,6 +1,8 @@
 package cn.sen.lucky.infrastructure.repository;
 
 import cn.sen.lucky.common.Constants;
+import cn.sen.lucky.domain.activity.model.aggregates.ActivityInfoLimitPageRich;
+import cn.sen.lucky.domain.activity.model.req.ActivityInfoLimitPageReq;
 import cn.sen.lucky.domain.activity.model.req.PartakeReq;
 import cn.sen.lucky.domain.activity.model.res.StockResult;
 import cn.sen.lucky.domain.activity.model.vo.*;
@@ -48,7 +50,7 @@ public class ActivityRepository implements IActivityRepository {
         activityDao.insert(req);
 
         // 设置活动库存 KEY
-        redisUtil.set(Constants.RedisKey.KEY_LOTTERY_ACTIVITY_STOCK_COUNT(activity.getActivityId()), 0);
+        redisUtil.set(Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(activity.getActivityId()), 0);
     }
 
     @Override
@@ -94,7 +96,7 @@ public class ActivityRepository implements IActivityRepository {
         Activity activity = activityDao.queryActivityById(req.getActivityId());
 
         // 从缓存中获取库存
-        Object usedStockCountObj =  redisUtil.get(Constants.RedisKey.KEY_LOTTERY_ACTIVITY_STOCK_COUNT(req.getActivityId()));
+        Object usedStockCountObj =  redisUtil.get(Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(req.getActivityId()));
 
         // 查询领取次数
         UserTakeActivityCount userTakeActivityCountReq = new UserTakeActivityCount();
@@ -145,7 +147,7 @@ public class ActivityRepository implements IActivityRepository {
     public StockResult subtractionActivityStockByRedis(String uId, Long activityId, Integer stockCount) {
 
         //  1. 获取抽奖活动库存 Key
-        String stockKey = Constants.RedisKey.KEY_LOTTERY_ACTIVITY_STOCK_COUNT(activityId);
+        String stockKey = Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(activityId);
 
         // 2. 扣减库存，目前占用库存数
         Integer stockUsedCount = (int) redisUtil.incr(stockKey, 1);
@@ -157,7 +159,7 @@ public class ActivityRepository implements IActivityRepository {
         }
 
         // 4. 以活动库存占用编号，生成对应加锁Key，细化锁的颗粒度
-        String stockTokenKey = Constants.RedisKey.KEY_LOTTERY_ACTIVITY_STOCK_COUNT_TOKEN(activityId, stockUsedCount);
+        String stockTokenKey = Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT_TOKEN(activityId, stockUsedCount);
 
         // 5. 使用 Redis.setNx 加一个分布式锁
         boolean lockToken = redisUtil.setNx(stockTokenKey, 350L);
@@ -173,13 +175,28 @@ public class ActivityRepository implements IActivityRepository {
     public void recoverActivityCacheStockByRedis(Long activityId, String tokenKey, String code) {
 
         if(!Constants.ResponseCode.SUCCESS.getCode().equals(code)) {
-            String stockKey = Constants.RedisKey.KEY_LOTTERY_ACTIVITY_STOCK_COUNT(activityId);
+            String stockKey = Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(activityId);
             redisUtil.decr(stockKey, 1);
             return;
 
         }
         // 删除分布式锁 Key
         redisUtil.del(tokenKey);
+    }
+
+    @Override
+    public ActivityInfoLimitPageRich queryActivityInfoLimitPage(ActivityInfoLimitPageReq req) {
+        Long count = activityDao.queryActivityInfoCount(req);
+        List<Activity> list = activityDao.queryActivityInfoList(req);
+
+        List<ActivityVO> activityVOList = new ArrayList<>();
+        for (Activity activity : list) {
+            ActivityVO activityVO = new ActivityVO();
+            BeanUtils.copyProperties(activity, activityVO);
+            activityVOList.add(activityVO);
+        }
+
+        return new ActivityInfoLimitPageRich(count, activityVOList);
     }
 
 }

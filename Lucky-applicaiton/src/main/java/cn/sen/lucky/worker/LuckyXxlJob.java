@@ -37,9 +37,6 @@ public class LuckyXxlJob {
     private IActivityDeploy activityDeploy;
 
     @Resource
-    private KafkaProducer kafkaProducer;
-
-    @Resource
     private IActivityPartake activityPartake;
 
     @Resource
@@ -49,13 +46,15 @@ public class LuckyXxlJob {
     private IDBRouterStrategy dbRouter;
 
 
+    @Resource
+    private KafkaProducer kafkaProducer;
 
     @XxlJob("luckyActivityStateJobHandler")
-    public void luckyActivityStateJobHandler() throws Exception {
+    public void LuckyActivityStateJobHandler() throws Exception {
         logger.info("扫描活动状态 Begin");
 
         List<ActivityVO> activityVOList = activityDeploy.scanToDoActivityList(0L);
-        if (activityVOList.isEmpty()){
+        if (activityVOList.isEmpty()) {
             logger.info("扫描活动状态 End 暂无符合需要扫描的活动列表");
             return;
         }
@@ -71,7 +70,7 @@ public class LuckyXxlJob {
                         break;
                     // 扫描时间已过期的活动，从活动中状态变更为关闭状态【这里也可以细化为2个任务来处理，也可以把时间判断放到数据库中操作】
                     case 5:
-                        if (activityVO.getEndDateTime().before(new Date())){
+                        if (activityVO.getEndDateTime().before(new Date())) {
                             Result state5Result = stateHandler.close(activityVO.getActivityId(), Constants.ActivityState.DOING);
                             logger.info("扫描活动状态为关闭 结果：{} activityId：{} activityName：{} creator：{}", JSON.toJSONString(state5Result), activityVO.getActivityId(), activityVO.getActivityName(), activityVO.getCreator());
                         }
@@ -91,19 +90,23 @@ public class LuckyXxlJob {
     }
 
     @XxlJob("luckyOrderMQStateJobHandler")
-    public void luckyOrderMQStateJobHandler() {
+    public void LuckyOrderMQStateJobHandler() throws Exception {
+        // 验证参数
         String jobParam = XxlJobHelper.getJobParam();
-        if (jobParam == null) {
+        if (null == jobParam) {
             logger.info("扫描用户抽奖奖品发放MQ状态[Table = 2*4] 错误 params is null");
             return;
         }
+
         // 获取分布式任务配置参数信息 参数配置格式：1,2,3 也可以是指定扫描一个，也可以配置多个库，按照部署的任务集群进行数量配置，均摊分别扫描效率更高
         String[] params = jobParam.split(",");
         logger.info("扫描用户抽奖奖品发放MQ状态[Table = 2*4] 开始 params：{}", JSON.toJSONString(params));
+
         if (params.length == 0) {
             logger.info("扫描用户抽奖奖品发放MQ状态[Table = 2*4] 结束 params is null");
             return;
         }
+
         // 获取分库分表配置下的分表数
         int tbCount = dbRouter.tbCount();
 

@@ -1,5 +1,6 @@
 package cn.sen.lucky.infrastructure.dao;
 
+import cn.sen.lucky.domain.activity.model.req.ActivityInfoLimitPageReq;
 import cn.sen.lucky.domain.activity.model.vo.AlterStateVO;
 import cn.sen.lucky.infrastructure.po.Activity;
 import org.apache.ibatis.annotations.Mapper;
@@ -58,5 +59,21 @@ public interface IActivityDao {
     * @param activity  入参
     */
    void updateActivityStock(Activity activity);
+
+   /**
+    * 查询活动分页数据数量
+    *
+    * @param req 入参
+    * @return    结果
+    */
+   Long queryActivityInfoCount(ActivityInfoLimitPageReq req);
+
+   /**
+    * 查询活动分页数据列表
+    *
+    * @param req   入参
+    * @return      结果
+    */
+   List<Activity> queryActivityInfoList(ActivityInfoLimitPageReq req);
 
 }
