@@ -160,7 +160,7 @@ public class ActivityRepository implements IActivityRepository {
 
         // 4. 以活动库存占用编号，生成对应加锁Key，细化锁的颗粒度
         String stockTokenKey = Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT_TOKEN(activityId, stockUsedCount);
-
+        logger.info(stockTokenKey);
         // 5. 使用 Redis.setNx 加一个分布式锁
         boolean lockToken = redisUtil.setNx(stockTokenKey, 350L);
         if (!lockToken) {
@@ -174,12 +174,12 @@ public class ActivityRepository implements IActivityRepository {
     @Override
     public void recoverActivityCacheStockByRedis(Long activityId, String tokenKey, String code) {
 
-        if(!Constants.ResponseCode.SUCCESS.getCode().equals(code)) {
-            String stockKey = Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(activityId);
-            redisUtil.decr(stockKey, 1);
-            return;
-
-        }
+//        if(!Constants.ResponseCode.SUCCESS.getCode().equals(code)) {
+//            String stockKey = Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(activityId);
+//            redisUtil.decr(stockKey, 1);
+//            return;
+//
+//        }
         // 删除分布式锁 Key
         redisUtil.del(tokenKey);
     }

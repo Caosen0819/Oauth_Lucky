@@ -27,7 +27,7 @@ public class ApiTest {
     @Resource
     IActivityDao activityDao;
 
-//    @Reference(interfaceClass = IActivityBooth.class, url = "dubbo://127.0.0.1:20800")
+//    @Reference(interfaceClass = IActivityBooth.class, url = "dubbo://8.130.78.210:20800")
 //    private IActivityBooth iActivityBooth;
 
     @Test

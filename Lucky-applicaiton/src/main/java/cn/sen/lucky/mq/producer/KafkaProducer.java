@@ -48,7 +48,7 @@ public class KafkaProducer {
      */
     public ListenableFuture<SendResult<String, Object>> sendLuckyInvoice(InvoiceVO invoice) {
         String objJson = JSON.toJSONString(invoice);
-        logger.info("发送MQ消息(中奖发货单) topic：{} bizId：{} message：{}", TOPIC_INVOICE, invoice.getuId(), objJson);
+//        logger.info("发送MQ消息(中奖发货单) topic：{} bizId：{} message：{}", TOPIC_INVOICE, invoice.getuId(), objJson);
         return kafkaTemplate.send(TOPIC_INVOICE, objJson);
     }
 
@@ -62,5 +62,6 @@ public class KafkaProducer {
         logger.info("发送MQ消息(领取活动记录) topic：{} bizId：{} message：{}", TOPIC_ACTIVITY_PARTAKE, activityPartakeRecord.getuId(), objJson);
         return kafkaTemplate.send(TOPIC_ACTIVITY_PARTAKE, objJson);
     }
+
 
 }

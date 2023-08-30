@@ -1,6 +1,5 @@
 server:
   port: 8080
-
 mini-db-router:
   jdbc:
     datasource:
@@ -11,28 +10,35 @@ mini-db-router:
       list: db01,db02
       db00:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/Lucky?useUnicode=true&serverTimezone=Asia/Shanghai
+        url: jdbc:mysql://8.130.78.210:3306/lucky?useUnicode=true&serverTimezone=Asia/Shanghai
         username: root
         password: 185450844
       db01:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/Lucky_01?useUnicode=true&serverTimezone=Asia/Shanghai
+        url: jdbc:mysql://8.130.78.210:3306/lucky_01?useUnicode=true&serverTimezone=Asia/Shanghai
         username: root
         password: 185450844
       db02:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/Lucky_02?useUnicode=true&serverTimezone=Asia/Shanghai
+        url: jdbc:mysql://8.130.78.210:3306/lucky_02?useUnicode=true&serverTimezone=Asia/Shanghai
         username: root
         password: 185450844
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     username: root
     password: 185450844
-    url: jdbc:mysql://127.0.0.1:3306/Lucky?useUnicode=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://8.130.78.210:3306/lucky?useUnicode=true&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+    oracleucp:
+      min-pool-size: 5
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 8.130.78.210:9092
     producer:
       # 发生错误后，消息重发的次数。
       retries: 1
@@ -67,48 +73,59 @@ spring:
       #listner负责ack，每调用一次，就立即commit
       ack-mode: manual_immediate
       missing-topics-fatal: false
-
+  application:
+    name: lucky-interfaces-provider
+  main:
+    allow-circular-references: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 8.130.78.210:8848
+        ip: 8.130.78.210
+        username: nacos
+        passowrd: nacos
 
 # ----------这个是本地的下面一块是服务器公网的
 # xxl-job
 # 官网：https://github.com/xuxueli/xxl-job/
-# 地址：http://localhost:7397/xxl-job-admin 【需要先启动 xxl-job】
+# 地址：http://8.130.78.210:7397/xxl-job-admin 【需要先启动 xxl-job】
 # 账号：admin
 # 密码：123456
-xxl:
-  job:
-    admin:
-      addresses: http://127.0.0.1:7397/xxl-job-admin
-    executor:
-      address:
-      appname: lucky-job
-      ip:
-      port: 9998
-      logpath: /Users/csen/itstack/data/applogs/xxl-job/jobhandler
-      logretentiondays: 50
-    accessToken:
+
+#xxl:
+#  job:
+#    admin:
+#      addresses: http://8.130.78.210:7397/xxl-job-admin
+#    executor:
+#      address:
+#      appname: lucky-job
+#      ip:
+#      port: 9998
+#      logpath: /Users/csen/itstack/data/applogs/xxl-job/jobhandler
+#      logretentiondays: 50
+#    accessToken:
 
 
 # http://39.96.73.167:7397/xxl-job-admin
 # 账号：admin
 # 密码：123456
-#xxl:
-#  job:
-#    admin:
-#      ### 调度中心部署跟地址 [选填]：如调度中心集群部署存在多个地址则用逗号分隔。执行器将会使用该地址进行"执行器心跳注册"和"任务结果回调"；为空则关闭自动注册；
-#      addresses: http://8.130.78.210:7397/xxl-job-admin
-#    executor:
-#      ### 执行器AppName [选填]：执行器心跳注册分组依据；为空则关闭自动注册
-#      appname: lucky-job
-#      ### 执行器注册 [选填]：优先使用该配置作为注册地址，为空时使用内嵌服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
-#      address:
-#      ### 执行器IP [选填]：默认为空表示自动获取IP，多网卡时可手动设置指定IP，该IP不会绑定Host仅作为通讯实用；地址信息用于 "执行器注册" 和 "调度中心请求并触发任务"；
-#      ip: 3e62f9.natappfree.cc
-#      ### 执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；
-#      port: 9999
-#      logpath: /Users/csen/itstack/data/applogs/xxl-job/jobhandler
-#      logretentiondays: 50
-#    accessToken: xdsl3ewi3al1oehxmo68pqxer
+xxl:
+  job:
+    admin:
+      ### 调度中心部署跟地址 [选填]：如调度中心集群部署存在多个地址则用逗号分隔。执行器将会使用该地址进行"执行器心跳注册"和"任务结果回调"；为空则关闭自动注册；
+      addresses: http://8.130.78.210:7397/xxl-job-admin
+    executor:
+      ### 执行器AppName [选填]：执行器心跳注册分组依据；为空则关闭自动注册
+      appname: lucky-job
+      ### 执行器注册 [选填]：优先使用该配置作为注册地址，为空时使用内嵌服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
+      address:
+      ### 执行器IP [选填]：默认为空表示自动获取IP，多网卡时可手动设置指定IP，该IP不会绑定Host仅作为通讯实用；地址信息用于 "执行器注册" 和 "调度中心请求并触发任务"；
+      ip: f4bhis.natappfree.cc
+      ### 执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；
+      port: 9999
+      logpath: /Users/csen/itstack/data/applogs/xxl-job/jobhandler
+      logretentiondays: 50
+    accessToken: xdsl3ewi3al1oehxmo68pqxer
 
 
 
@@ -120,22 +137,26 @@ mybatis:
 # nacos 配置中心
 nacos:
   discovery:
-    server-addr: 127.0.0.1:8848
+    server-addr: 8.130.78.210:8848
+    ip: 8.130.78.210
+    username: nacos
+    passowrd: nacos
 
 # Dubbo 广播方式配置，如果调用不稳定可以修改为直连模式：https://codechina.csdn.net/KnowledgePlanet/Lucky/-/issues/1
 dubbo:
   application:
     name: Lucky
     version: 1.0.0
-  #    parameters:
-  #      unicast: false
   registry:
-    #    address: N/A
-    #    address: #multicast://224.5.6.7:1234
-    #    address: zookeeper://127.0.0.1:2181
-    address: nacos://127.0.0.1:8848
+    address: nacos://8.130.78.210:8848
   protocol:
     name: dubbo
     port: -1
+#    host: 8.130.78.210
   scan:
     base-packages: cn.sen.lucky.rpc.*
+wx:
+  config:
+    originalid: gh_89e9e6e0eb59
+    appid: wxa063ec6e70fe5e9b
+    token: bugstack

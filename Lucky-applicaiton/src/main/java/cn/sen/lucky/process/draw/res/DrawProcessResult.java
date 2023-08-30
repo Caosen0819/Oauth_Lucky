@@ -7,6 +7,15 @@ import cn.sen.lucky.domain.strategy.model.vo.DrawAwardVO;
 public class DrawProcessResult extends Result {
 
     private DrawAwardVO drawAwardVO;
+    public String log = "1";
+
+    public String getLog() {
+        return log;
+    }
+
+    public void setLog(String log) {
+        this.log = log;
+    }
 
     public DrawProcessResult(String code, String info) {
         super(code, info);

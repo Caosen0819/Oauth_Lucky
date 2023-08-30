@@ -4,11 +4,15 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/Lucky-infrastructure" />
     <file type="web" url="file://$PROJECT_DIR$/Lucky-interfaces" />
+    <file type="web" url="file://$PROJECT_DIR$/Lucky-interfaces2" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/Lucky-interfaces2/pom.xml" />
+        <option value="$PROJECT_DIR$/Lucky-interfaces/pom.xml" />
+        <option value="$PROJECT_DIR$/Lucky-API/pom.xml" />
       </list>
     </option>
   </component>

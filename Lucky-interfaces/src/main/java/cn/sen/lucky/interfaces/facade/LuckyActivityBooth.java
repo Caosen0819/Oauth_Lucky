@@ -15,10 +15,11 @@ import cn.sen.lucky.rpc.activity.booth.req.DrawReq;
 import cn.sen.lucky.rpc.activity.booth.req.QuantificationDrawReq;
 import cn.sen.lucky.rpc.activity.booth.res.DrawRes;
 import com.alibaba.fastjson.JSON;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -28,6 +29,7 @@ import javax.annotation.Resource;
  * @Date 2023/4/4 19:34
  */
 @Service
+@DubboService
 public class LuckyActivityBooth implements ILuckyActivityBooth {
 
     private Logger logger = LoggerFactory.getLogger(LuckyActivityBooth.class);
@@ -41,8 +43,9 @@ public class LuckyActivityBooth implements ILuckyActivityBooth {
     @Override
     public DrawRes doDraw(DrawReq drawReq) {
         try {
-            logger.info("抽奖，开始 uId：{} activityId：{}", drawReq.getuId(), drawReq.getActivityId());
-
+//            logger.info("抽奖，开始 uId：{} activityId：{}", drawReq.getuId(), drawReq.getActivityId());
+//            String s = "抽奖，开始 uId："+ drawReq.getuId()+ "activityId："+drawReq.getActivityId()+ "\n";
+//            s.concat("数据库路由选择中......" + "\n");
             // 1. 执行抽奖
             DrawProcessResult drawProcessResult = activityProcess.doDrawProcess(new DrawProcessReq(drawReq.getuId(), drawReq.getActivityId()));
             if (!Constants.ResponseCode.SUCCESS.getCode().equals(drawProcessResult.getCode())) {
@@ -59,8 +62,11 @@ public class LuckyActivityBooth implements ILuckyActivityBooth {
             DrawRes drawRes = new DrawRes(Constants.ResponseCode.SUCCESS.getCode(), Constants.ResponseCode.SUCCESS.getInfo());
             drawRes.setAwardDTO(awardDTO);
 
-            logger.info("抽奖，完成 uId：{} activityId：{} drawRes：{}", drawReq.getuId(), drawReq.getActivityId(), JSON.toJSONString(drawRes));
+//            logger.info("抽奖，完成 uId：{} activityId：{} drawRes：{}", drawReq.getuId(), drawReq.getActivityId(), JSON.toJSONString(drawRes));
 
+//            String wancheng = "抽奖，完成 uId：" + drawReq.getuId() + " activityId：" + drawReq.getActivityId() + "drawRes：" + JSON.toJSONString(drawRes) + "\n";
+//            String log = s.concat(drawProcessResult.getLog()).concat(wancheng);
+//            drawRes.setLog(log);
             return drawRes;
         } catch (Exception e) {
             logger.error("抽奖，失败 uId：{} activityId：{} reqJson：{}", drawReq.getuId(), drawReq.getActivityId(), JSON.toJSONString(drawReq), e);

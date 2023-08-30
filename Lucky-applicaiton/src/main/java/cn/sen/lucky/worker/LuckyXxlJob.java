@@ -49,7 +49,7 @@ public class LuckyXxlJob {
     @Resource
     private KafkaProducer kafkaProducer;
 
-    @XxlJob("luckyActivityStateJobHandler")
+    @XxlJob("LuckyActivityStateJobHandler")
     public void LuckyActivityStateJobHandler() throws Exception {
         logger.info("扫描活动状态 Begin");
 
@@ -89,7 +89,7 @@ public class LuckyXxlJob {
 
     }
 
-    @XxlJob("luckyOrderMQStateJobHandler")
+    @XxlJob("LuckyOrderMQStateJobHandler")
     public void LuckyOrderMQStateJobHandler() throws Exception {
         // 验证参数
         String jobParam = XxlJobHelper.getJobParam();

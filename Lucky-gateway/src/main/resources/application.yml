@@ -1,0 +1,108 @@
+server:
+  port: 8201
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: reactive
+  application:
+    name: lucky-gateway
+  cloud:
+    nacos:
+      ## 注册中心配置
+      discovery:
+        # nacos的服务地址，nacos-server中IP地址:端口号
+        server-addr: 8.130.78.210:8848
+      config:
+        file-extension: yaml
+        refresh-enabled: true # 是否动态刷新,默认为false
+        # 支持多个共享dataId的配置，优先级小于extension-configs,shared-configs是一个集合
+        shared-configs[0]:
+          # 网关 通用配置可以定义在这个里面
+          dataId: demo-gateway.yaml # 配置文件名dataId
+          group: DEFAULT_GROUP  # 默认为DEFAULT_GROUP
+    gateway:
+      routes:
+        - id: toapi
+          uri: lb://lucky-api-consumer
+          predicates:
+            - Path=/lucky-api-consumer/**
+          filters:
+            - StripPrefix=1
+        - id: toprovider
+          uri: lb://lucky-interfaces-provider
+          predicates:
+            - Path=/lucky-interfaces-provider/**
+          filters:
+            - StripPrefix=1
+        - id: toauth
+          uri: lb://lucky-auth
+          predicates:
+            - Path=/lucky-auth/**
+          filters:
+            - StripPrefix=1
+  redis:
+    host: 8.130.78.210
+    password:
+    port: 6379
+    timeout: 15000
+    jedis:
+      pool:
+        max-active: 600
+        max-idle: 300
+        max-wait: 15000
+        min-idle: 10
+secure:
+  ignore:
+    urls: #配置白名单路径
+      - "/doc.html"
+      - "/swagger-resources/**"
+      - "/swagger/**"
+      - "/*/v2/api-docs"
+      - "/*/*.js"
+      - "/*/*.css"
+      - "/*/*.png"
+      - "/*/*.ico"
+      - "/webjars/**"
+      - "/actuator/**"
+      - "/mall-auth/oauth/token"
+      - "/lucky-interfaces/**"
+      - "/lucky-auth/**"
+      - "/lucky-interfaces-provider/**"
+      - "/lucky-api-consumer/**"
+oauth2:
+  cloud:
+    sys:
+      parameter:
+        ignoreUrls:
+#          - /lucky-interfaces-provider/**
+          - /lucky-auth/**
+          - /interfaces/**
+          - /auth/**
+          - /oauth/token
+          - /oauth/authorize
+          - /mall-admin/admin/login
+          - /doc.html
+          - /swagger-resources/**
+          - /swagger/**
+          - /*/v2/api-docs
+          - /*/*.js
+          - /*/*.css
+          - /*/*.png
+          - /*/*.ico
+          - /webjars/**
+          - /actuator/**
+          - /mall-auth/oauth/token
+          - /mall-auth/rsa/publicKey
+          - /mall-search/**
+          - /mall-portal/sso/login
+          - /mall-portal/sso/register
+          - /mall-portal/sso/getAuthCode
+          - /mall-portal/home/**
+          - /mall-portal/product/**
+          - /mall-portal/brand/**
+          - /mall-admin/admin/login
+          - /mall-admin/admin/register
+          - /mall-admin/minio/upload
+          -
+#          - /mall-admin/**
+

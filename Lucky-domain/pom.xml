@@ -51,11 +51,15 @@
         </dependency>
         <dependency>
             <groupId>cn.sen.middleware</groupId>
-            <artifactId>db-router-spring-boot-starter</artifactId>
+            <artifactId>db-router-spring-boot-starter-sen</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
     </dependencies>
 

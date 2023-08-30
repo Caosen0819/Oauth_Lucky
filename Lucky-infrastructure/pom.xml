@@ -41,7 +41,7 @@
 
         <dependency>
             <groupId>cn.sen.middleware</groupId>
-            <artifactId>db-router-spring-boot-starter</artifactId>
+            <artifactId>db-router-spring-boot-starter-sen</artifactId>
         </dependency>
     </dependencies>
 

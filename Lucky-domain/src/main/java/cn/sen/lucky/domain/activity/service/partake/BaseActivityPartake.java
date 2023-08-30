@@ -33,21 +33,21 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
 
         // 2. 查询活动账单
         ActivityBillVO activityBillVO = super.queryActivityBill(req);
-
+        System.out.println(activityBillVO.getUserTakeLeftCount());
         // 3. 活动信息校验处理【活动库存、状态、日期、个人参与次数】
         Result checkResult = this.checkActivityBill(req, activityBillVO);
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(checkResult.getCode())) {
             return new PartakeResult(checkResult.getCode(), checkResult.getInfo());
         }
 
-        // 4. 扣减活动库存，通过Redis【活动库存扣减编号，作为锁的Key，缩小颗粒度】 Begin
+        // 4. 扣减活动库存，通过Redis【活动库存扣减编号，作为锁的Key，缩小颗粒度】 Begin（也就是在这里加锁，锁的问题就出现在这里）
         StockResult subtractionActivityResult = this.subtractionActivityStockByRedis(req.getuId(), req.getActivityId(), activityBillVO.getStockCount());
 
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(subtractionActivityResult.getCode())) {
             this.recoverActivityCacheStockByRedis(req.getActivityId(), subtractionActivityResult.getStockKey(), subtractionActivityResult.getCode());
             return new PartakeResult(subtractionActivityResult.getCode(), subtractionActivityResult.getInfo());
         }
-
+        activityBillVO.setStockSurplusCount(subtractionActivityResult.getStockSurplusCount());
             // 5. 插入领取活动信息【个人用户把活动信息写入到用户表】
         Long takeId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
         Result grabResult = this.grabActivity(req, activityBillVO, takeId);
