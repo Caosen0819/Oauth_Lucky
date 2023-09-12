@@ -33,5 +33,11 @@ public class DrawRes extends Result implements Serializable {
         this.awardDTO = awardDTO;
     }
 
-
+    @Override
+    public String toString() {
+        return "DrawRes{" +
+                "awardDTO=" + awardDTO +
+                ", log='" + log + '\'' +
+                '}';
+    }
 }

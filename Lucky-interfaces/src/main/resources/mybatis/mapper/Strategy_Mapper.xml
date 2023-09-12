@@ -29,4 +29,11 @@
         WHERE strategy_id = #{strategyId}
     </select>
 
+    <select id="queryAllStrategy" parameterType="java.lang.Long" resultMap="strategyMap">
+        SELECT
+            id, strategy_id, strategy_desc, strategy_mode, grant_type,
+            grant_date, ext_info, create_time, update_time
+        FROM strategy
+    </select>
+
 </mapper>

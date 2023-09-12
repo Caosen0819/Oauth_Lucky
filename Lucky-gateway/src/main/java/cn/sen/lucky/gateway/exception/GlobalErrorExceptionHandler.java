@@ -7,6 +7,8 @@ import cn.sen.lucky.common.model.ResultMsg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
@@ -27,9 +29,13 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class GlobalErrorExceptionHandler implements ErrorWebExceptionHandler {
+
+    private Logger logger = LoggerFactory.getLogger(GlobalErrorExceptionHandler.class);
+
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
 
-        System.out.println("GlobalErrorExceptionHandler");
+//        System.out.println("GlobalErrorExceptionHandler");
+        logger.info(ex.getMessage());
         ServerHttpResponse response = exchange.getResponse();
         if (response.isCommitted()) {
             return Mono.error(ex);

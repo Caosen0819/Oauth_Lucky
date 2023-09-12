@@ -1,7 +1,9 @@
 package cn.sen.lucky.domain.strategy.repository;
 
+import cn.sen.lucky.domain.activity.model.vo.StrategyVO;
 import cn.sen.lucky.domain.strategy.model.aggregates.StrategyRich;
 import cn.sen.lucky.domain.strategy.model.vo.AwardBriefVO;
+import cn.sen.lucky.domain.strategy.model.vo.StrategyDetailBriefVO;
 
 import java.util.List;
 
@@ -12,10 +14,14 @@ import java.util.List;
 public interface IStrategyRepository {
 
     StrategyRich queryStrategyRich(Long strategyId);
-
+    StrategyRich queryStrategyRich2(Long strategyId);
     AwardBriefVO queryAwardInfo(String awardId);
 
     List<String> queryNoStockStrategyAwardList(Long strategyId);
+
+    List<StrategyVO> queryAllStrategy();
+
+    List<StrategyDetailBriefVO> queryStrategyDetailList(Long strategyId);
 
     /**
      * 扣减库存

@@ -19,5 +19,8 @@ public class ActivityPartakeSupport {
     protected ActivityBillVO queryActivityBill(PartakeReq req){
         return activityRepository.queryActivityBill(req);
     }
+    protected ActivityBillVO queryActivityBill2(PartakeReq req){
+        return activityRepository.queryActivityBill2(req);
+    }
 
 }

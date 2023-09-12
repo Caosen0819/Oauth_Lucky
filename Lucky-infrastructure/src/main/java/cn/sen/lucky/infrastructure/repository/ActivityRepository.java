@@ -13,7 +13,6 @@ import cn.sen.lucky.infrastructure.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -93,8 +92,11 @@ public class ActivityRepository implements IActivityRepository {
     public ActivityBillVO queryActivityBill(PartakeReq req) {
 
         // 查询活动信息
-        Activity activity = activityDao.queryActivityById(req.getActivityId());
+//        Activity activity = activityDao.queryActivityById(req.getActivityId());
 
+        String name = "Activity_" + req.getActivityId();
+        Object o = redisUtil.get(name);
+        ActivityVO activity = (ActivityVO)o;
         // 从缓存中获取库存
         Object usedStockCountObj =  redisUtil.get(Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(req.getActivityId()));
 
@@ -120,6 +122,50 @@ public class ActivityRepository implements IActivityRepository {
 
         return activityBillVO;
     }
+
+    @Override
+    public ActivityBillVO queryActivityBill2(PartakeReq req) {
+
+         //查询活动信息
+        Activity activity = activityDao.queryActivityById(req.getActivityId());
+
+//        String name = "Activity_" + req.getActivityId();
+//        Object o = redisUtil.get(name);
+//        ActivityVO activity = (ActivityVO)o;
+        // 从缓存中获取库存
+        Object usedStockCountObj =  redisUtil.get(Constants.RedisKey.KEY_Lucky_ACTIVITY_STOCK_COUNT(req.getActivityId()));
+
+        // 查询领取次数
+        UserTakeActivityCount userTakeActivityCountReq = new UserTakeActivityCount();
+        userTakeActivityCountReq.setuId(req.getuId());
+        userTakeActivityCountReq.setActivityId(req.getActivityId());
+        UserTakeActivityCount userTakeActivityCount = userTakeActivityCountDao.queryUserTakeActivityCount(userTakeActivityCountReq);
+
+        // 封装结果信息
+        ActivityBillVO activityBillVO = new ActivityBillVO();
+        activityBillVO.setuId(req.getuId());
+        activityBillVO.setActivityId(req.getActivityId());
+        activityBillVO.setActivityName(activity.getActivityName());
+        activityBillVO.setBeginDateTime(activity.getBeginDateTime());
+        activityBillVO.setEndDateTime(activity.getEndDateTime());
+        activityBillVO.setTakeCount(activity.getTakeCount());
+        activityBillVO.setStockCount(activity.getStockCount());
+        activityBillVO.setStockSurplusCount(null == usedStockCountObj ? activity.getStockSurplusCount() : activity.getStockCount() - Integer.parseInt(String.valueOf(usedStockCountObj)));
+        activityBillVO.setStrategyId(activity.getStrategyId());
+        activityBillVO.setState(activity.getState());
+        activityBillVO.setUserTakeLeftCount(null == userTakeActivityCount ? null : userTakeActivityCount.getLeftCount());
+
+        return activityBillVO;
+    }
+
+
+
+    @Override
+    public List<ActivityVO> queryAllActivity(){
+        List<ActivityVO> activityList = activityDao.queryAllActivity();
+        return activityList;
+    }
+
 
     @Override
     public int subtractionActivityStock(Long activityId) {

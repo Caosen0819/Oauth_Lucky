@@ -21,6 +21,8 @@ public interface IActivityPartake {
      * @return    领取结果
      */
     PartakeResult doPartake(PartakeReq req);
+    PartakeResult doPartake2(PartakeReq req);
+
 
     /**
      * 保存奖品单

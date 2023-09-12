@@ -1,5 +1,6 @@
 package cn.sen.lucky.infrastructure.util;
 
+import cn.sen.lucky.domain.strategy.model.vo.StrategyDetailBriefVO;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,6 +25,7 @@ public class RedisUtil {
 
     public RedisUtil(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
+
     }
 
     /**
@@ -97,7 +99,10 @@ public class RedisUtil {
     public Object get(String key) {
         return key == null ? null : redisTemplate.opsForValue().get(key);
     }
-
+        public Long rightpush(String key, List<Object> value){
+        Long a = redisTemplate.opsForList().rightPushAll(key, value);
+        return a;
+    }
     /**
      * 普通缓存放入
      *
@@ -435,9 +440,9 @@ public class RedisUtil {
      * @param end   结束  0 到 -1代表所有值
      * @return
      */
-    public List<Object> lGet(String key, long start, long end) {
+    public List<?> lGet(String key, long start, long end) {
         try {
-            return redisTemplate.opsForList().range(key, start, end);
+            return  redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

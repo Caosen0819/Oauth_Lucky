@@ -1,12 +1,13 @@
 package cn.sen.lucky.domain.strategy.model.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * @Author caosen
  * @Date 2023/3/30 23:26
  */
-public class StrategyDetailBriefVO {
+public class StrategyDetailBriefVO implements Serializable {
 
     /**
      * 策略ID

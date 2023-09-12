@@ -36,6 +36,7 @@ public class AccessTokenConfig {
     }
 
     /**
+     * JWTTokenStore 他的token信息，是把认证信息加密后封装在JWT负载中，怎么加密？就是这个方法
      * JwtAccessTokenConverter 令牌增强类，用于JWT令牌和OAuth身份进行转换
      * TokenEnhancer的子类，在JWT编码的令牌值和OAuth身份验证信息之间进行转换。
      * TODO：后期可以使用非对称加密

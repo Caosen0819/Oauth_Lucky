@@ -60,8 +60,7 @@ public class ActivityDrawProcessImpl implements IActivityDrawProcess {
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(partakeResult.getCode()) && !Constants.ResponseCode.NOT_CONSUMED_TAKE.getCode().equals(partakeResult.getCode())) {
             return new DrawProcessResult(partakeResult.getCode(), partakeResult.getInfo());
         }
-//        String fasong1 = "";
-//        String xiaofei1 = "";
+
         // 2. 首次成功领取活动，发送 MQ 消息
         if (Constants.ResponseCode.SUCCESS.getCode().equals(partakeResult.getCode())) {
             ActivityPartakeRecordVO activityPartakeRecord = new ActivityPartakeRecordVO();
@@ -139,7 +138,7 @@ public class ActivityDrawProcessImpl implements IActivityDrawProcess {
         return ruleQuantificationCrowdResult;
     }
 
-    private DrawOrderVO buildDrawOrderVO(DrawProcessReq req, Long strategyId, Long takeId, DrawAwardVO drawAwardVO) {
+    public DrawOrderVO buildDrawOrderVO(DrawProcessReq req, Long strategyId, Long takeId, DrawAwardVO drawAwardVO) {
         long orderId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
         DrawOrderVO drawOrderVO = new DrawOrderVO();
         drawOrderVO.setuId(req.getuId());

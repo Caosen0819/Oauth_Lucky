@@ -9,4 +9,6 @@ import cn.sen.lucky.domain.strategy.model.res.DrawResult;
  */
 public interface IDrawExec {
     DrawResult doDrawExec(DrawReq req);
+
+    DrawResult doDrawExec2(DrawReq req);
 }

@@ -25,6 +25,17 @@ mini-db-router:
         password: 185450844
 
 spring:
+  redis:
+    host: 8.130.78.210
+    password: 185450844
+    port: 6379
+    timeout: 15000
+    jedis:
+      pool:
+        max-active: 600
+        max-idle: 300
+        max-wait: 15000
+        min-idle: 10
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -81,9 +92,9 @@ spring:
     nacos:
       discovery:
         server-addr: 8.130.78.210:8848
-        ip: 8.130.78.210
-        username: nacos
-        passowrd: nacos
+#        ip: 8.130.78.210
+#        username: nacos
+#        passowrd: nacos
 
 # ----------这个是本地的下面一块是服务器公网的
 # xxl-job
@@ -135,12 +146,12 @@ mybatis:
   config-location:  classpath:/mybatis/config/mybatis-config.xml
 
 # nacos 配置中心
-nacos:
-  discovery:
-    server-addr: 8.130.78.210:8848
-    ip: 8.130.78.210
-    username: nacos
-    passowrd: nacos
+#nacos:
+#  discovery:
+#    server-addr: 8.130.78.210:8848
+#    ip: 8.130.78.210
+#    username: nacos
+#    passowrd: nacos
 
 # Dubbo 广播方式配置，如果调用不稳定可以修改为直连模式：https://codechina.csdn.net/KnowledgePlanet/Lucky/-/issues/1
 dubbo:

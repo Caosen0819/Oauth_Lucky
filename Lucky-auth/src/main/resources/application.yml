@@ -7,7 +7,7 @@ spring:
         server-addr: 8.130.78.210:8848
   redis:
     host: 8.130.78.210
-    password:
+    password: 185450844
     port: 6379
     timeout: 15000
     jedis:
@@ -51,3 +51,7 @@ dubbo:
     version: 1.0.0
   registry:
     address: nacos://8.130.78.210:8848
+security:
+  oauth2:
+    authorization:
+      check-token-access:

@@ -1,6 +1,7 @@
 package cn.sen.lucky.infrastructure.dao;
 
 import cn.sen.lucky.domain.activity.model.req.ActivityInfoLimitPageReq;
+import cn.sen.lucky.domain.activity.model.vo.ActivityVO;
 import cn.sen.lucky.domain.activity.model.vo.AlterStateVO;
 import cn.sen.lucky.infrastructure.po.Activity;
 import org.apache.ibatis.annotations.Mapper;
@@ -52,6 +53,8 @@ public interface IActivityDao {
     * @return 待处理的活动集合
     */
    List<Activity> scanToDoActivityList(Long id);
+
+   List<ActivityVO> queryAllActivity();
 
    /**
     * 更新用户领取活动后，活动库存

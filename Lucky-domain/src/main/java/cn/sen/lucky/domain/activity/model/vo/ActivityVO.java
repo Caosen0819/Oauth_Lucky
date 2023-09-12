@@ -1,12 +1,13 @@
 package cn.sen.lucky.domain.activity.model.vo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @Author caosen
  * @Date 2023/3/30 22:38
  */
-public class ActivityVO {
+public class ActivityVO implements Serializable {
 
     /**
      * 自增ID

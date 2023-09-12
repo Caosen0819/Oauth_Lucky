@@ -19,6 +19,23 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
+    <resultMap id="activityMap2" type="cn.sen.lucky.domain.activity.model.vo.ActivityVO">
+        <id column="id" property="id"/>
+        <result column="activity_id" property="activityId"/>
+        <result column="activity_name" property="activityName"/>
+        <result column="activity_desc" property="activityDesc"/>
+        <result column="begin_date_time" property="beginDateTime"/>
+        <result column="end_date_time" property="endDateTime"/>
+        <result column="stock_count" property="stockCount"/>
+        <result column="stock_surplus_count" property="stockSurplusCount"/>
+        <result column="take_count" property="takeCount"/>
+        <result column="strategy_id" property="strategyId"/>
+        <result column="state" property="state"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
     <insert id="insert" parameterType="cn.sen.lucky.infrastructure.po.Activity">
         INSERT INTO activity
         (activity_id, activity_name, activity_desc, begin_date_time, end_date_time,
@@ -52,6 +69,12 @@
         WHERE id >= #{id} AND state in (4,5)
         ORDER BY ID ASC
             LIMIT 10
+    </select>
+
+    <select id="queryAllActivity" resultMap="activityMap2">
+        SELECT activity_id, activity_name, activity_desc, begin_date_time, end_date_time,
+               stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time
+        FROM activity
     </select>
 
     <update id="updateActivityStock" parameterType="cn.sen.lucky.infrastructure.po.Activity">

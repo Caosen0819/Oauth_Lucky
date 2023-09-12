@@ -7,7 +7,7 @@ spring:
         server-addr: 8.130.78.210:8848
   redis:
     host: 8.130.78.210
-    password:
+    password: 185450844
     port: 6379
     timeout: 15000
     jedis:
@@ -18,7 +18,7 @@ spring:
         min-idle: 10
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://8.130.78.210:3307/mall?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://8.130.78.210:3306/lucky?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 185450844
   jpa:

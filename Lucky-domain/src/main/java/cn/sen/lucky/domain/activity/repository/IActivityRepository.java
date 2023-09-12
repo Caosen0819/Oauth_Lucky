@@ -61,7 +61,11 @@ public interface IActivityRepository {
      * @return 活动账单
      */
     ActivityBillVO queryActivityBill(PartakeReq req);
-
+    ActivityBillVO queryActivityBill2(PartakeReq req);
+    /**
+     *
+     */
+    List<ActivityVO> queryAllActivity();
     /**
      * 扣减活动库存
      *

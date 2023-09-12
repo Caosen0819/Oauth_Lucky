@@ -2,6 +2,7 @@ package cn.sen.lucky.test;
 
 import cn.sen.lucky.infrastructure.dao.IActivityDao;
 import cn.sen.lucky.infrastructure.po.Activity;
+import cn.sen.lucky.infrastructure.utils.XmlUtil;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,10 @@ public class ApiTest {
 
     private Logger logger = LoggerFactory.getLogger(ApiTest.class);
 
+    @Test
+    public void rr() {
+        System.out.println(XmlUtil.beanToXml("res"));
+    }
     @Resource
     IActivityDao activityDao;
 

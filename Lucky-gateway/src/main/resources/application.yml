@@ -1,5 +1,5 @@
 server:
-  port: 8201
+  port: 8081
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -34,6 +34,12 @@ spring:
             - Path=/lucky-interfaces-provider/**
           filters:
             - StripPrefix=1
+        - id: toprovider
+          uri: lb://lucky-interfaces-provider
+          predicates:
+            - Path=/lucky-interfaces-provider/**
+          filters:
+            - StripPrefix=1
         - id: toauth
           uri: lb://lucky-auth
           predicates:
@@ -42,7 +48,7 @@ spring:
             - StripPrefix=1
   redis:
     host: 8.130.78.210
-    password:
+    password: 185450844
     port: 6379
     timeout: 15000
     jedis:
@@ -103,6 +109,9 @@ oauth2:
           - /mall-admin/admin/login
           - /mall-admin/admin/register
           - /mall-admin/minio/upload
-          -
+          - /lucky-interfaces/**
+          - /lucky-auth/**
+          - /lucky-interfaces-provider/**
+          - /lucky-api-consumer/**
 #          - /mall-admin/**
 

@@ -1,5 +1,6 @@
 package cn.sen.lucky.infrastructure.repository;
 
+import cn.sen.lucky.domain.activity.model.vo.StrategyVO;
 import cn.sen.lucky.domain.strategy.model.aggregates.StrategyRich;
 import cn.sen.lucky.domain.strategy.model.vo.AwardBriefVO;
 import cn.sen.lucky.domain.strategy.model.vo.StrategyBriefVO;
@@ -11,6 +12,7 @@ import cn.sen.lucky.infrastructure.dao.IStrategyDetailDao;
 import cn.sen.lucky.infrastructure.po.Award;
 import cn.sen.lucky.infrastructure.po.Strategy;
 import cn.sen.lucky.infrastructure.po.StrategyDetail;
+import cn.sen.lucky.infrastructure.util.RedisUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -33,23 +35,57 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Resource
     private IAwardDao awardDao;
+    @Resource
+    private RedisUtil redisUtil;
 
     @Override
     public StrategyRich queryStrategyRich(Long strategyId) {
+
+        String strategyName = "Strategy_" + strategyId;
+        StrategyVO strategy = (StrategyVO)redisUtil.get(strategyName);
+        StrategyBriefVO strategyBriefVO = new StrategyBriefVO();
+        BeanUtils.copyProperties(strategy, strategyBriefVO);
+        String strategyDetailName = "StrategyDetail_" + strategyId;
+//        List<?> objects = redisUtil.lGet(strategyDetailName, 0, -1);
+        Object o = redisUtil.lGetIndex(strategyDetailName, 0);
+
+
+//        List<StrategyDetailBriefVO> strategyDetailBriefVOList = (List<StrategyDetailBriefVO>) objects;
+//        StrategyDetailBriefVO strategyDetailBriefVO = strategyDetailBriefVOList.get(0);
+//        ArrayList arrayList = strategyDetailBriefVOList.get(0);
+
+
+        return new StrategyRich(strategyId, strategyBriefVO, (List<StrategyDetailBriefVO>)o);
+    }
+
+    @Override
+    public StrategyRich queryStrategyRich2(Long strategyId) {
+
         Strategy strategy = strategyDao.queryStrategy(strategyId);
         List<StrategyDetail> strategyDetailList = strategyDetailDao.queryStrategyDetailList(strategyId);
 
         StrategyBriefVO strategyBriefVO = new StrategyBriefVO();
-        BeanUtils.copyProperties(strategy, strategyBriefVO);
+        strategyBriefVO.setStrategyId(strategy.getStrategyId());
+        strategyBriefVO.setStrategyDesc(strategy.getStrategyDesc());
+        strategyBriefVO.setStrategyMode(strategy.getStrategyMode());
+        strategyBriefVO.setGrantType(strategy.getGrantType());
+        strategyBriefVO.setGrantDate(strategy.getGrantDate());
+        strategyBriefVO.setExtInfo(strategy.getExtInfo());
 
         List<StrategyDetailBriefVO> strategyDetailBriefVOList = new ArrayList<>();
         for (StrategyDetail strategyDetail : strategyDetailList) {
-            StrategyDetailBriefVO strategyDetailBriefVO = new StrategyDetailBriefVO();
-            BeanUtils.copyProperties(strategyDetail, strategyDetailBriefVO);
+            StrategyDetailBriefVO  strategyDetailBriefVO = new StrategyDetailBriefVO();
+            strategyDetailBriefVO.setStrategyId(strategyDetail.getStrategyId());
+            strategyDetailBriefVO.setAwardId(strategyDetail.getAwardId());
+            strategyDetailBriefVO.setAwardName(strategyDetail.getAwardName());
+            strategyDetailBriefVO.setAwardCount(strategyDetail.getAwardCount());
+            strategyDetailBriefVO.setAwardSurplusCount(strategyDetail.getAwardSurplusCount());
+            strategyDetailBriefVO.setAwardRate(strategyDetail.getAwardRate());
             strategyDetailBriefVOList.add(strategyDetailBriefVO);
         }
 
         return new StrategyRich(strategyId, strategyBriefVO, strategyDetailBriefVOList);
+
     }
 
     @Override
@@ -70,6 +106,30 @@ public class StrategyRepository implements IStrategyRepository {
     @Override
     public List<String> queryNoStockStrategyAwardList(Long strategyId) {
         return strategyDetailDao.queryNoStockStrategyAwardList(strategyId);
+    }
+
+    @Override
+    public List<StrategyVO> queryAllStrategy() {
+        List<Strategy> strategies = strategyDao.queryAllStrategy();
+        List<StrategyVO> strategyVOS = new ArrayList<>();
+        for (Strategy strategy: strategies) {
+            StrategyVO strategyVO = new StrategyVO();
+            BeanUtils.copyProperties(strategy, strategyVO);
+            strategyVOS.add(strategyVO);
+        }
+        return strategyVOS;
+    }
+
+    @Override
+    public List<StrategyDetailBriefVO> queryStrategyDetailList(Long strategyId) {
+        List<StrategyDetail> strategyDetailList = strategyDetailDao.queryStrategyDetailList(strategyId);
+        List<StrategyDetailBriefVO> strategyDetailBriefVOList = new ArrayList<>();
+        for (StrategyDetail strategyDetail : strategyDetailList) {
+            StrategyDetailBriefVO strategyDetailBriefVO = new StrategyDetailBriefVO();
+            BeanUtils.copyProperties(strategyDetail, strategyDetailBriefVO);
+            strategyDetailBriefVOList.add(strategyDetailBriefVO);
+        }
+        return strategyDetailBriefVOList;
     }
 
     @Override
