@@ -30,6 +30,8 @@ public class StrategyRepository implements IStrategyRepository {
     @Resource
     private IStrategyDao strategyDao;
 
+
+
     @Resource
     private IStrategyDetailDao strategyDetailDao;
 
@@ -140,6 +142,22 @@ public class StrategyRepository implements IStrategyRepository {
         int count = strategyDetailDao.deductStock(req);
         return count == 1;
     }
+
+    @Override
+    public int deductStockByRedis(Long strategyId, String awardId) {
+        String key1 = strategyId + "_Awards";
+        String key2 = awardId;
+        int hdecr = (int)redisUtil.hdecr(key1, key2, 1);
+        return hdecr;
+    }
+
+    @Override
+    public int updateAwardCount(String awardId, int awardCount) {
+        int result = strategyDetailDao.updateAwardCount(awardId, awardCount);
+        return result > 0 ? 1 : 0;
+    }
+
+
 
 }
 

@@ -45,9 +45,19 @@
         WHERE strategy_id = #{strategyId} AND award_surplus_count = 0
     </select>
 
+    <select id="queryAwardListByStrategyId" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT award_id AS awardId
+        FROM strategy_detail
+        WHERE strategy_id = #{strategyId}
+    </select>
+
     <update id="deductStock" parameterType="cn.sen.lucky.infrastructure.po.StrategyDetail">
         UPDATE strategy_detail SET award_surplus_count = award_surplus_count - 1
         WHERE strategy_id = #{strategyId} AND award_id = #{awardId} AND award_surplus_count > 0
     </update>
 
+    <update id="updateAwardCount">
+        update strategy_detail set award_surplus_count = #{awardCount}
+        where award_id = #{awardId}
+    </update>
 </mapper>

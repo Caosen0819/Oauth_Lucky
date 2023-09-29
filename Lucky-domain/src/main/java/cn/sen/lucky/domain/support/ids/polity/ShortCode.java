@@ -2,7 +2,6 @@ package cn.sen.lucky.domain.support.ids.polity;
 
 import cn.sen.lucky.domain.support.ids.IIdGenerator;
 import org.springframework.stereotype.Component;
-import sun.util.resources.cldr.ne.CalendarData_ne_IN;
 
 import java.util.Calendar;
 import java.util.Random;

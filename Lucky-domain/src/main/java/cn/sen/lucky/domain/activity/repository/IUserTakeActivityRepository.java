@@ -25,6 +25,8 @@ public interface IUserTakeActivityRepository {
      */
     int subtractionLeftCount(Long activityId, String activityName, Integer takeCount, Integer userTakeLeftCount, String uId);
 
+    int subtractionLeftCount2(Long activityId, String activityName, Integer takeCount, Integer userTakeLeftCount, String uId);
+
     /**
      * 领取活动
      *
@@ -88,5 +90,16 @@ public interface IUserTakeActivityRepository {
      * @param activityPartakeRecordVO   活动领取记录
      */
     void updateActivityStock(ActivityPartakeRecordVO activityPartakeRecordVO);
+
+    /**
+     * 更新用户剩余抽奖次数
+     * @param uId
+     */
+    int queryUserAndLeftCount(String uId);
+
+    /**
+     * 用redis定时任务更新用户抽奖次数
+     */
+    int updateLeftCountByRedis(String uId, int leftCount);
 
 }

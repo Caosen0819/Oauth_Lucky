@@ -61,26 +61,25 @@ public class ActivityDrawProcessImpl implements IActivityDrawProcess {
             return new DrawProcessResult(partakeResult.getCode(), partakeResult.getInfo());
         }
 
-        // 2. 首次成功领取活动，发送 MQ 消息
+        // 2. 首次成功领取活动，发送 MQ 消息（优化）
         if (Constants.ResponseCode.SUCCESS.getCode().equals(partakeResult.getCode())) {
             ActivityPartakeRecordVO activityPartakeRecord = new ActivityPartakeRecordVO();
             activityPartakeRecord.setuId(req.getuId());
             activityPartakeRecord.setActivityId(req.getActivityId());
             activityPartakeRecord.setStockCount(partakeResult.getStockCount());
             activityPartakeRecord.setStockSurplusCount(partakeResult.getStockSurplusCount());
-            // 发送 MQ 消息
 //            kafkaProducer.sendLuckyActivityPartakeRecord(activityPartakeRecord);
-//            fasong1 = "发送MQ消息(领取活动记录) topic：lucky_activity_partake bizId：fuzhengwei message：" + JSON.toJSONString(activityPartakeRecord) + "\n";
-//            xiaofei1 = "消费MQ消息，异步扣减活动库存:" + JSON.toJSONString(activityPartakeRecord) + "\n";
+            /**
+             * 上面这行代码优化成增加订单数量
+             */
+            kafkaProducer.sendLuckyOrderIncreatement(activityPartakeRecord);
+
         }
-
-
         Long strategyId = partakeResult.getStrategyId();
         Long takeId = partakeResult.getTakeId() ;
 
         // 3. 执行抽奖
         DrawResult drawResult = drawExec.doDrawExec(new DrawReq(req.getuId(), strategyId));
-        String drawResultstring = JSON.toJSONString(drawResult) + "\n";
         if (Constants.DrawState.FAIL.getCode().equals(drawResult.getDrawState())) {
             return new DrawProcessResult(Constants.ResponseCode.LOSING_DRAW.getCode(), Constants.ResponseCode.LOSING_DRAW.getInfo());
         }

@@ -4,9 +4,13 @@ import cn.sen.lucky.common.Constants;
 import cn.sen.lucky.common.Result;
 import cn.sen.lucky.domain.activity.model.vo.ActivityVO;
 import cn.sen.lucky.domain.activity.model.vo.InvoiceVO;
+import cn.sen.lucky.domain.activity.repository.IActivityRepository;
+import cn.sen.lucky.domain.activity.repository.IUserTakeActivityRepository;
 import cn.sen.lucky.domain.activity.service.deploy.IActivityDeploy;
 import cn.sen.lucky.domain.activity.service.partake.IActivityPartake;
 import cn.sen.lucky.domain.activity.service.stateflow.IStateHandler;
+import cn.sen.lucky.domain.strategy.repository.IStrategyRepository;
+import cn.sen.lucky.domain.util.RedisUti2;
 import cn.sen.lucky.mq.producer.KafkaProducer;
 import cn.sen.middleware.db.router.strategy.IDBRouterStrategy;
 import com.alibaba.fastjson.JSON;
@@ -22,6 +26,8 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 抽奖业务，任务配置
@@ -40,14 +46,25 @@ public class LuckyXxlJob {
     private IActivityPartake activityPartake;
 
     @Resource
+    private IActivityRepository activityRepository;
+
+    @Resource
     private IStateHandler stateHandler;
 
     @Resource
     private IDBRouterStrategy dbRouter;
 
+    @Resource
+    private RedisUti2 redisUti2;
 
     @Resource
     private KafkaProducer kafkaProducer;
+
+    @Resource
+    private IStrategyRepository strategyRepository;
+
+    @Resource
+    private IUserTakeActivityRepository userTakeActivityRepository;
 
     @XxlJob("LuckyActivityStateJobHandler")
     public void LuckyActivityStateJobHandler() throws Exception {
@@ -88,6 +105,64 @@ public class LuckyXxlJob {
         logger.info("扫描活动状态 End");
 
     }
+
+    @XxlJob("LuckyUserLeftCount")
+    public void LuckyUserLeftCount() throws Exception {
+        String jobParam = XxlJobHelper.getJobParam();
+        if (null == jobParam) {
+            logger.info("用户剩余xxljob更新失败");
+            return;
+        }
+        Long activityId = Long.parseLong(jobParam);
+        String key = activityId + "_UserCount";
+        Set<Map.Entry<Object, Object>> entries = redisUti2.hmget(key).entrySet();
+        for (Map.Entry<Object, Object> entry : entries) {
+            userTakeActivityRepository.updateLeftCountByRedis((String)entry.getKey(),(int)entry.getValue());
+        }
+        redisUti2.del(key);
+    }
+    @XxlJob("LuckyOrderIncreatement")
+    public void LuckyOrderIncreatement() throws Exception {
+        String jobParam = XxlJobHelper.getJobParam();
+        if (null == jobParam) {
+            logger.info("订单数量xxljob更新失败");
+            return;
+        }
+        Long activityId = Long.parseLong(jobParam);
+        String key = activityId + "_Order";
+//        logger.info("{}",key);
+        int number = (int) redisUti2.get(key);
+//        logger.info("{}",number);
+
+        activityRepository.updateActivityStockById(activityId, number);
+    }
+    @XxlJob("LuckyAwardUpdate")
+    public void LuckyAwardUpdate() throws Exception {
+        String jobParam = XxlJobHelper.getJobParam();
+        if (null == jobParam) {
+            logger.info("奖品数量xxl-job更新失败");
+            return;
+        }
+        Long strategyId = Long.parseLong(jobParam);
+//        logger.info("{}",activityId );
+        String key = strategyId + "_Awards";
+//        logger.info("{}", key);
+        Map<Object, Object> entries = redisUti2.hmget(key);
+//        logger.info("{}", entries.size());
+        for (Map.Entry<Object, Object> entry : entries.entrySet()) {
+//            logger.info("{}:{}",entry.getKey(), entry.getValue());
+            int result = strategyRepository.updateAwardCount((String) entry.getKey(), (int) entry.getValue());
+            logger.info("reusult:{}", result);
+            if (result > 0) {
+                logger.info("奖品{}更新成功", entry.getKey());
+            } else {
+                logger.info("奖品{}更新失败", entry.getKey());
+            }
+
+        }
+
+    }
+
 
     @XxlJob("LuckyOrderMQStateJobHandler")
     public void LuckyOrderMQStateJobHandler() throws Exception {
@@ -155,5 +230,6 @@ public class LuckyXxlJob {
         logger.info("扫描用户抽奖奖品发放MQ状态[Table = 2*4] 完成 param：{}", JSON.toJSONString(params));
 
     }
+
 
 }

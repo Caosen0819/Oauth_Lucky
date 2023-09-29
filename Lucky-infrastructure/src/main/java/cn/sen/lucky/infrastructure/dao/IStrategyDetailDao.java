@@ -27,11 +27,23 @@ public interface IStrategyDetailDao {
     List<String> queryNoStockStrategyAwardList(Long strategyId);
 
     /**
+     * 根据id查询所有奖品，暂时用于预热的时候用
+     */
+    List<String> queryAwardListByStrategyId(Long strategyId);
+
+    /**
      * 扣减库存
      * @param strategyDetailReq 策略ID、奖品ID
      * @return                  返回结果
      */
     int deductStock(StrategyDetail strategyDetailReq);
+
+    /**
+     * 更新奖品库存
+     * @param
+     * @return
+     */
+    int updateAwardCount(String awardId, int awardCount);
 
     /**
      * 插入策略配置组

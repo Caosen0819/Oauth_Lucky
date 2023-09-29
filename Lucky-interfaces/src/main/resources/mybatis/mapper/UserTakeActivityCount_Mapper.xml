@@ -35,4 +35,18 @@
         WHERE u_id = #{uId} AND activity_id = #{activityId} AND left_count > 0
     </update>
 
+    <update id="updateLeftCountByRedis">
+        UPDATE user_take_activity_count
+        SET left_count = #{lefCount}
+        WHERE u_id = #{uId}
+    </update>
+
+    <select id="queryUserAndLeftCount" resultType="int">
+        select left_count
+        from user_take_activity_count
+        where u_id = #{uId}
+    </select>
+
+
+
 </mapper>

@@ -61,8 +61,9 @@ public interface IActivityDao {
     *
     * @param activity  入参
     */
-      void updateActivityStock(Activity activity);
+   void updateActivityStock(Activity activity);
 
+   int updateActivityStockById(Long activityId, int stockUsedCount);
    /**
     * 查询活动分页数据数量
     *

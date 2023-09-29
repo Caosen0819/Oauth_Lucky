@@ -245,4 +245,10 @@ public class ActivityRepository implements IActivityRepository {
         return new ActivityInfoLimitPageRich(count, activityVOList);
     }
 
+
+    @Override
+    public int updateActivityStockById(Long activityId, int stockNumber) {
+        return activityDao.updateActivityStockById(activityId, stockNumber);
+    }
+
 }

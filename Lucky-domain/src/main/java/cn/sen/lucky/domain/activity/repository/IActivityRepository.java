@@ -109,4 +109,5 @@ public interface IActivityRepository {
      */
     ActivityInfoLimitPageRich queryActivityInfoLimitPage(ActivityInfoLimitPageReq req);
 
+    int updateActivityStockById(Long activityId, int stockNumber);
 }

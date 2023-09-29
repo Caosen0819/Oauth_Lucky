@@ -42,7 +42,7 @@ public abstract class EngineBase extends EngineConfig implements EngineFilter{
 
 
         /**
-         * 循环，找到这个用户应该做等活动
+         * 循环，找到这个用户应该做的活动
          */
         while (Constants.NodeType.STEM.equals(treeNodeVO.getNodeType())) {
             /*通过决策值拿到规则过滤器*/

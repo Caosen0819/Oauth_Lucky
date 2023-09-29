@@ -31,4 +31,8 @@ public interface IStrategyRepository {
      */
     boolean deductStock(Long strategyId, String awardId);
 
+    int deductStockByRedis(Long strategyId, String awardId);
+
+    int updateAwardCount(String awardId, int awardCount);
+
 }

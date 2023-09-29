@@ -34,4 +34,15 @@ public interface IUserTakeActivityCountDao {
 //    @DBRouter
     int updateLeftCount(UserTakeActivityCount userTakeActivityCount);
 
+    /**
+     * 通过redis更新次数
+     * @param uId
+     * @param leftCount
+     * @return
+     */
+//    @DBRouter
+    int updateLeftCountByRedis(String uId, int leftCount);
+
+    int queryUserAndLeftCount(String uId);
+
 }

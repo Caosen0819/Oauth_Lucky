@@ -4,12 +4,14 @@ import cn.sen.lucky.common.Constants;
 import cn.sen.lucky.common.Result;
 import cn.sen.lucky.domain.activity.model.req.PartakeReq;
 import cn.sen.lucky.domain.activity.model.res.PartakeResult;
+import cn.sen.lucky.domain.activity.model.vo.ActivityPartakeRecordVO;
 import cn.sen.lucky.domain.activity.model.vo.DrawOrderVO;
 import cn.sen.lucky.domain.activity.service.partake.IActivityPartake;
 import cn.sen.lucky.domain.strategy.model.res.DrawResult;
 import cn.sen.lucky.domain.strategy.model.vo.DrawAwardVO;
 import cn.sen.lucky.domain.strategy.service.draw.IDrawExec;
 import cn.sen.lucky.domain.support.ids.IIdGenerator;
+import cn.sen.lucky.mq.producer.KafkaProducer;
 import cn.sen.lucky.process.draw.IActivityDrawProcess;
 import cn.sen.lucky.process.draw.req.DrawProcessReq;
 import cn.sen.lucky.process.draw.res.DrawProcessResult;
@@ -36,7 +38,8 @@ public class controller {
     private Map<Constants.Ids, IIdGenerator> idGeneratorMap;
     @Resource
     private ILuckyActivityBooth luckyActivityBooth;
-
+    @Resource
+    private KafkaProducer kafkaProducer;
     @Resource
     private IActivityPartake activityPartake;
     @Resource
@@ -63,9 +66,7 @@ public class controller {
         Long strategyId = partakeResult.getStrategyId();
         Long takeId = partakeResult.getTakeId() ;
         DrawResult drawResult = drawExec.doDrawExec(new cn.sen.lucky.domain.strategy.model.req.DrawReq(req.getuId(), strategyId));
-//        DrawAwardVO drawAwardVO = drawResult.getDrawAwardInfo();
-//        DrawOrderVO drawOrderVO = buildDrawOrderVO(new DrawProcessReq(req.getuId(), req.getActivityId()), strategyId, takeId, drawAwardVO);
-//        Result recordResult = activityPartake.recordDrawOrder(drawOrderVO);
+
         return Constants.ResponseCode.SUCCESS.toString();
     }
 
@@ -83,9 +84,7 @@ public class controller {
         Long strategyId = partakeResult.getStrategyId();
         Long takeId = partakeResult.getTakeId() ;
         DrawResult drawResult = drawExec.doDrawExec2(new cn.sen.lucky.domain.strategy.model.req.DrawReq(req.getuId(), strategyId));
-//        DrawAwardVO drawAwardVO = drawResult.getDrawAwardInfo();
-//        DrawOrderVO drawOrderVO = buildDrawOrderVO(new DrawProcessReq(req.getuId(), req.getActivityId()), strategyId, takeId, drawAwardVO);
-//        Result recordResult = activityPartake.recordDrawOrder(drawOrderVO);
+
         return Constants.ResponseCode.SUCCESS.toString();
     }
     public DrawOrderVO buildDrawOrderVO(DrawProcessReq req, Long strategyId, Long takeId, DrawAwardVO drawAwardVO) {

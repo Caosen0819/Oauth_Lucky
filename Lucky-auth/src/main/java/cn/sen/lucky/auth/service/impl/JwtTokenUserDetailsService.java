@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * 这里用到的知识和springsecurity有关，UserDetailsService是springsecurity其中一个重要的组件，我们在增强token的时候就需要用到这个组件
  * @Author caosen
  * @data 2022/10/8--17:15
  */

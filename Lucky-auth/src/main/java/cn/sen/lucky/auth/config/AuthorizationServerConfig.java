@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * @EnableAuthorizationServer 认证授权服务
  * @Author caosen
  * @data 2022/10/7--13:28
  */

@@ -7,6 +7,7 @@ import cn.sen.lucky.domain.activity.model.vo.DrawOrderVO;
 import cn.sen.lucky.domain.activity.model.vo.InvoiceVO;
 import cn.sen.lucky.domain.activity.model.vo.UserTakeActivityVO;
 import cn.sen.lucky.domain.activity.repository.IUserTakeActivityRepository;
+import cn.sen.lucky.domain.util.RedisUti2;
 import cn.sen.lucky.infrastructure.dao.IActivityDao;
 import cn.sen.lucky.infrastructure.dao.IUserStrategyExportDao;
 import cn.sen.lucky.infrastructure.dao.IUserTakeActivityCountDao;
@@ -42,8 +43,42 @@ public class UserTakeActivityRepository implements IUserTakeActivityRepository {
     @Resource
     private IUserStrategyExportDao userStrategyExportDao;
 
+    @Resource
+    private RedisUti2 redisUti2;
+
     @Override
     public int subtractionLeftCount(Long activityId, String activityName, Integer takeCount, Integer userTakeLeftCount, String uId) {
+        if (null == userTakeLeftCount) {
+            UserTakeActivityCount userTakeActivityCount = new UserTakeActivityCount();
+            userTakeActivityCount.setuId(uId);
+            userTakeActivityCount.setActivityId(activityId);
+            userTakeActivityCount.setTotalCount(takeCount);
+            userTakeActivityCount.setLeftCount(takeCount - 1);
+            userTakeActivityCountDao.insert(userTakeActivityCount);
+            return 1;
+        } else {
+            UserTakeActivityCount userTakeActivityCount = new UserTakeActivityCount();
+            userTakeActivityCount.setuId(uId);
+            userTakeActivityCount.setActivityId(activityId);
+
+            //此处将用户自己的剩余次数优化到redis中，需要配合定时任务
+            String leftCountKey = userTakeActivityCount.getActivityId() + "_UserCount";
+            String userId = userTakeActivityCount.getuId();
+            if (redisUti2.hHasKey(leftCountKey,userTakeActivityCount.getuId())) {
+                double hincr = redisUti2.hdecr(leftCountKey, userId, 1);
+                return hincr >= 0 ? 1 : 0;
+            } else {
+                int leftCount = userTakeActivityCountDao.queryUserAndLeftCount(uId);
+                boolean hset = redisUti2.hset(leftCountKey, userId, leftCount - 1);
+                return hset ? 1: 0;
+            }
+
+//            return userTakeActivityCountDao.updateLeftCount(userTakeActivityCount);
+        }
+    }
+
+    @Override
+    public int subtractionLeftCount2(Long activityId, String activityName, Integer takeCount, Integer userTakeLeftCount, String uId) {
         if (null == userTakeLeftCount) {
             UserTakeActivityCount userTakeActivityCount = new UserTakeActivityCount();
             userTakeActivityCount.setuId(uId);
@@ -168,5 +203,17 @@ public class UserTakeActivityRepository implements IUserTakeActivityRepository {
         activity.setStockSurplusCount(activityPartakeRecordVO.getStockSurplusCount());
         activityDao.updateActivityStock(activity);
     }
+
+    @Override
+    public int queryUserAndLeftCount(String uId) {
+        int leftCount = userTakeActivityCountDao.queryUserAndLeftCount(uId);
+        return leftCount;
+    }
+
+    @Override
+    public int updateLeftCountByRedis(String uId, int leftCount) {
+        return userTakeActivityCountDao.updateLeftCountByRedis(uId, leftCount);
+    }
+
 
 }

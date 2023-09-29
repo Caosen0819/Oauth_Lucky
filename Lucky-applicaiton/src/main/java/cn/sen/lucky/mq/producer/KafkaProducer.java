@@ -41,6 +41,8 @@ public class KafkaProducer {
      */
     public static final String TOPIC_ACTIVITY_PARTAKE = "lucky_activity_partake";
 
+    public static final String TOPIC_ORDER_INCREATEMENT = "lucky_increatement";
+
     /**
      * 发送中奖物品发货单消息
      *
@@ -61,6 +63,12 @@ public class KafkaProducer {
         String objJson = JSON.toJSONString(activityPartakeRecord);
         logger.info("发送MQ消息(领取活动记录) topic：{} bizId：{} message：{}", TOPIC_ACTIVITY_PARTAKE, activityPartakeRecord.getuId(), objJson);
         return kafkaTemplate.send(TOPIC_ACTIVITY_PARTAKE, objJson);
+    }
+
+    public ListenableFuture<SendResult<String, Object>> sendLuckyOrderIncreatement(ActivityPartakeRecordVO activityPartakeRecord) {
+        Long id = activityPartakeRecord.getActivityId();
+        String key = id + "_Order";
+        return kafkaTemplate.send(TOPIC_ORDER_INCREATEMENT, key);
     }
 
 

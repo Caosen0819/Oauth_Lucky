@@ -108,7 +108,7 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
         activityBillVO.setStockSurplusCount(subtractionActivityResult.getStockSurplusCount());
         // 5. 插入领取活动信息【个人用户把活动信息写入到用户表】
         Long takeId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
-        Result grabResult = this.grabActivity(req, activityBillVO, takeId);
+        Result grabResult = this.grabActivity2(req, activityBillVO, takeId);
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(grabResult.getCode())) {
             this.recoverActivityCacheStockByRedis(req.getActivityId(), subtractionActivityResult.getStockKey(), grabResult.getCode());
             return new PartakeResult(grabResult.getCode(), grabResult.getInfo());
@@ -205,6 +205,8 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
      * @return 领取结果
      */
     protected abstract Result grabActivity(PartakeReq partake, ActivityBillVO bill, Long takeId);
+
+    protected abstract Result grabActivity2(PartakeReq partake, ActivityBillVO bill, Long takeId);
 
 }
 
